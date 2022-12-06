@@ -20,8 +20,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.hpp
         mainwindow.ui
-        qcustomplot.cpp
-        qcustomplot.h
+        ./dependencies/QCustomPlot/qcustomplot.cpp
+        ./dependencies/QCustomPlot/qcustomplot.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
