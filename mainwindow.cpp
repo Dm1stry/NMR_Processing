@@ -1,30 +1,25 @@
 #include "mainwindow.hpp"
 #include "./ui_mainwindow.h"
+#include "nmr_reader.hpp"
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // generate some data:
-    QVector<double> x(101), y(101); // initialize with entries 0..100
-    for (int i=0; i<101; ++i)
-    {
-      x[i] = i/50.0 - 1; // x goes from -1 to 1
-      y[i] = x[i]*x[i]; // let's plot a quadratic function
-    }
     // create graph and assign data to it:
+    nmr_reader reader;
+    NMR_Data_1D CPMG = reader.Read("/home/peter/Documents/CPMG_X_10_10S_4000TAU_1000ECHO.nmr");
     auto customPlot = (ui->plot);
     customPlot->addGraph();
-    customPlot->graph(0)->setData(x, y);
-    customPlot->addGraph();
-    customPlot->graph(1)->setData(x, y);
+    customPlot->graph(0)->setData(CPMG.t, CPMG.A);
     // give the axes some labels:
     customPlot->xAxis->setLabel("x");
     customPlot->yAxis->setLabel("y");
     // set axes ranges, so we see all data:
-    customPlot->xAxis->setRange(-1, 1);
-    customPlot->yAxis->setRange(0, 1);
+    customPlot->xAxis->setRange(0, *(std::max_element(CPMG.t.begin(), CPMG.t.end())));
+    customPlot->yAxis->setRange(0, *(std::max_element(CPMG.A.begin(), CPMG.A.end())));
     customPlot->replot();
 }
 

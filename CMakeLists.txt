@@ -22,6 +22,9 @@ set(PROJECT_SOURCES
         mainwindow.ui
         ./dependencies/QCustomPlot/qcustomplot.cpp
         ./dependencies/QCustomPlot/qcustomplot.h
+        ireader.hpp
+        nmr_reader.cpp
+        nmr_reader.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
