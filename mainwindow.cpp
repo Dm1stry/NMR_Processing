@@ -70,4 +70,15 @@ void MainWindow::on_open_file_triggered()
     open_file_window = new OpenFileWindow();
     open_file_window->setDataPtr(data);
     open_file_window->show();
+    //ui->plot_widget->addGraph();
+    //ui->plot_widget->graph(0)->setData(data->getTimes(), data->getAmplitudes());
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(data != nullptr)
+    {
+
+    }
+}
+

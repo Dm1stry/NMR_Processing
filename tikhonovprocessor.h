@@ -8,8 +8,8 @@ class TikhonovProcessor : public iProcessor
 public:
     TikhonovProcessor();
     void Process(const Data& data);
-    QPair<QVector<double>, QVector<double>> getApproximatedCurve();
-    QPair<QVector<double>, QVector<double>>  getSpectrum();
+    QPair<QVector<double>, QVector<double>> getApproximatedCurve() const;
+    QPair<QVector<double>, QVector<double>>  getSpectrum() const;
     ~TikhonovProcessor();
 private:
     Eigen::MatrixXd * K_;

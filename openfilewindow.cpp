@@ -49,5 +49,6 @@ void OpenFileWindow::on_open_file_button_clicked()
     {
         data_ptr_->readAsCPMG(file_path_);
     }
+    this->close();
 }
 

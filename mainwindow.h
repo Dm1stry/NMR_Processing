@@ -30,13 +30,13 @@ private slots:
     void on_xScaleBox_textHighlighted(const QString &param);
     void on_yScaleBox_textHighlighted(const QString &param);
     void on_open_file_triggered();
-
+    void on_pushButton_clicked();
 
 private:
     inline void on_ScaleBox_textHighlighted(const QString &param, Scale &scale);
     Ui::MainWindow *ui;
     Data * data;
-    iProcessor * processors[3];
+    TikhonovProcessor tikhonov;
     Scale x_scale;
     Scale y_scale;
     OpenFileWindow * open_file_window;

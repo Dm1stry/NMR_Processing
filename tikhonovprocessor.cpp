@@ -33,5 +33,15 @@ void TikhonovProcessor::Process(const Data& data)
         p[i] += std::pow(10, log_p_min + i * (step));
         std::cout << p[i] << ' ';
     }
+    //Закончить метод
+}
 
+QPair<QVector<double>, QVector<double>> TikhonovProcessor::getApproximatedCurve() const
+{
+    return {{0}, {0}}; //Заглушка - переделать
+}
+
+QPair<QVector<double>, QVector<double>>  TikhonovProcessor::getSpectrum() const
+{
+    return {{0}, {0}}; //Заглушка - переделать
 }
