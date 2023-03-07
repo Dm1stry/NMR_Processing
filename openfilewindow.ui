@@ -23,7 +23,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="file_path">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
          <horstretch>0</horstretch>
@@ -33,7 +33,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="open_fil_explorer">
+      <widget class="QPushButton" name="open_file_explorer">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
          <horstretch>0</horstretch>
@@ -68,7 +68,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="comboBox">
+    <widget class="QComboBox" name="data_type_box">
      <item>
       <property name="text">
        <string>CPMG</string>
@@ -110,9 +110,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="open_file_button">
        <property name="text">
-        <string>PushButton</string>
+        <string>Открыть</string>
        </property>
       </widget>
      </item>
