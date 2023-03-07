@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include <eigen3/Eigen/Dense>
 #include <QApplication>
 
 int main(int argc, char *argv[])

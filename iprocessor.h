@@ -5,11 +5,10 @@
 class iProcessor
 {
 public:
-    iProcessor();
-    virtual void Process(const Data& data);
-    virtual QPair<QVector<double>, QVector<double>> getApproximatedCurve();
-    virtual QPair<QVector<double>, QVector<double>>  getSpectrum();
-    virtual ~iProcessor();
+    virtual void Process(const Data& data) = 0;
+    virtual QPair<QVector<double>, QVector<double>> getApproximatedCurve() const = 0;
+    virtual QPair<QVector<double>, QVector<double>>  getSpectrum() const = 0;
+    virtual ~iProcessor() = default;
 };
 
 #endif // IPROCESSOR_H

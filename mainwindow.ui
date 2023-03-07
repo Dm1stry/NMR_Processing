@@ -163,7 +163,7 @@
      <widget class="QWidget" name="spectrum_widget" native="true"/>
     </item>
     <item row="0" column="1">
-     <widget class="QCustomPlot" name="plot" native="true"/>
+     <widget class="QCustomPlot" name="plot_widget" native="true"/>
     </item>
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -283,8 +283,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
+    <addaction name="open_file"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -294,14 +293,9 @@
    <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
   </widget>
-  <action name="action">
+  <action name="open_file">
    <property name="text">
     <string>Открыть</string>
-   </property>
-  </action>
-  <action name="action_2">
-   <property name="text">
-    <string>Создать</string>
    </property>
   </action>
  </widget>

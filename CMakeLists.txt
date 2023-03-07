@@ -29,6 +29,10 @@ set(PROJECT_SOURCES
 
         data.h
         data.cpp
+
+        openfilewindow.h
+        openfilewindow.cpp
+        openfilewindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
