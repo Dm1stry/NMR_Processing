@@ -18,13 +18,17 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS PrintSupport Widgets REQUIRED)
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
-        mainwindow.hpp
+        mainwindow.h
         mainwindow.ui
         ./dependencies/QCustomPlot/qcustomplot.cpp
         ./dependencies/QCustomPlot/qcustomplot.h
-        ireader.hpp
-        nmr_reader.cpp
-        nmr_reader.hpp
+
+        iprocessor.h
+        tikhonovprocessor.h
+        tikhonovprocessor.cpp
+
+        data.h
+        data.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

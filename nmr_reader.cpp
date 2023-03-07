@@ -1,9 +1,3 @@
-#include "nmr_reader.hpp"
-
-
-
-nmr_reader::nmr_reader() {}
-
 NMR_Data_1D nmr_reader::Read(const QString &path)
 {
     QFile nmr_file(path);
