@@ -68,5 +68,6 @@ void MainWindow::on_yScaleBox_textHighlighted(const QString &param)
 void MainWindow::on_open_file_triggered()
 {
     open_file_window = new OpenFileWindow();
+    open_file_window->setDataPtr(data);
     open_file_window->show();
 }

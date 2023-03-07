@@ -4,14 +4,14 @@
 #include <QVector>
 #include <QFile>
 #include <QTextStream>
-#include <filesystem>
+
 
 enum class ExperimentType
 {
     empty,
-    CPMG,
-    T1ir,
-    T2dfi
+    CPMG,  //КПМГ
+    T1ir,  //Инверсия-Восстановление
+    T2dfi  //Спад Свободной Индукции
 };
 
 class Data

@@ -76,7 +76,12 @@
      </item>
      <item>
       <property name="text">
-       <string>T1_ir</string>
+       <string>T1 инверсия-восстановление</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>T2 ССИ</string>
       </property>
      </item>
     </widget>
