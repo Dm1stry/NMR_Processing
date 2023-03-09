@@ -7,7 +7,7 @@ class TikhonovProcessor : public iProcessor
 {
 public:
     TikhonovProcessor();
-    void Process(const Data& data);
+    void Process(Data& data);
     QPair<QVector<double>, QVector<double>> getApproximatedCurve() const;
     QPair<QVector<double>, QVector<double>>  getSpectrum() const;
     ~TikhonovProcessor();

@@ -16,7 +16,7 @@ TikhonovProcessor::~TikhonovProcessor()
     t_ = nullptr;
 }
 
-void TikhonovProcessor::Process(const Data& data)
+void TikhonovProcessor::Process(Data& data)
 {
     alfa_ = 20;
     int p_quantity = 10000;

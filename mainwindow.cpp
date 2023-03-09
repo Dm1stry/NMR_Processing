@@ -74,11 +74,11 @@ void MainWindow::on_open_file_triggered()
     //ui->plot_widget->graph(0)->setData(data->getTimes(), data->getAmplitudes());
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_tikhonov_process_button_clicked()
 {
     if(data != nullptr)
     {
-
+        tikhonov.Process(data);
     }
 }
 

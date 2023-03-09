@@ -32,7 +32,7 @@
       <item>
        <layout class="QHBoxLayout" name="mode_buttons_layout">
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="tikhonov_process_button">
           <property name="text">
            <string>Тихонов</string>
           </property>

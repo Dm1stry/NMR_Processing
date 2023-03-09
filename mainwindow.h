@@ -30,7 +30,7 @@ private slots:
     void on_xScaleBox_textHighlighted(const QString &param);
     void on_yScaleBox_textHighlighted(const QString &param);
     void on_open_file_triggered();
-    void on_pushButton_clicked();
+    void on_tikhonov_process_button_clicked();
 
 private:
     inline void on_ScaleBox_textHighlighted(const QString &param, Scale &scale);
