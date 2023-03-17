@@ -2,7 +2,22 @@
 
 //Data::Data(QVector<double> A, QVector<double> t) : A_(A), t_(t) {}
 
-Data::Data() : data_type_(ExperimentType::empty) {}
+Data::Data()  : data_type_(ExperimentType::empty) {}
+
+bool Data::readFictiveData()
+{
+    data_type_ = ExperimentType::CPMG;
+     size_t line_count = 50000;
+     t_.reserve(line_count);
+     A_.reserve(line_count);
+     double T2 = 1920;
+     for(int i = 0; i < line_count; ++i)
+     {
+         t_.push_back(i);
+         A_.push_back(std::exp(-i/T2));
+     }
+    return true;
+}
 
 bool Data::readAsCPMG(QString path)
 {

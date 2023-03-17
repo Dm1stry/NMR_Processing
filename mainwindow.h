@@ -34,6 +34,7 @@ private slots:
 
 private:
     inline void on_ScaleBox_textHighlighted(const QString &param, Scale &scale);
+    void redrawGraphs();
     Ui::MainWindow *ui;
     Data * data;
     TikhonovProcessor tikhonov;

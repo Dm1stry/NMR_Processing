@@ -5,13 +5,20 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
-      data(nullptr),
+      data(new Data),
       x_scale(Scale::linear),
       y_scale(Scale::linear)
 {
     ui->setupUi(this);
     auto plot = (ui->plot_widget);
     auto spectrum = (ui->spectrum_widget);
+    data->readFictiveData();  //Фиктивное чтение данных
+    ui->plot_widget->addGraph();
+    /*ui->plot_widget->graph(0)->setData(data->getTimes(), data->getAmplitudes());
+    plot->graph(0)->rescaleAxes();
+    plot->replot();
+    */
+    redrawGraphs();
 }
 
 MainWindow::~MainWindow()
@@ -78,7 +85,17 @@ void MainWindow::on_tikhonov_process_button_clicked()
 {
     if(data != nullptr)
     {
-        tikhonov.Process(data);
+        tikhonov.Process(*data);
+        ui->plot_widget->addGraph();
+        redrawGraphs();
     }
+
+}
+
+void MainWindow::redrawGraphs()
+{
+    ui->plot_widget->graph(0)->setData(data->getTimes(), data->getAmplitudes());
+    ui->plot_widget->graph(0)->rescaleAxes();
+    ui->plot_widget->replot();
 }
 

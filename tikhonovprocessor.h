@@ -2,6 +2,8 @@
 #define TIKHONOVPROCESSOR_H
 #include "iprocessor.h"
 #include <eigen3/Eigen/Dense>
+#include <cmath>
+#include <algorithm>
 
 class TikhonovProcessor : public iProcessor
 {
@@ -15,7 +17,7 @@ private:
     Eigen::MatrixXd * K_;
     Eigen::VectorXd * s_;
     Eigen::VectorXd * r_;
-    Eigen::VectorXd * t_;
+    QVector<double> t_;
     double alfa_;
 };
 

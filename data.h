@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QFile>
 #include <QTextStream>
+#include <cmath>
 
 
 enum class ExperimentType
@@ -21,6 +22,7 @@ public:
     //Data(std::filesystem::path);
     Data();
     bool readAsCPMG(QString path);
+    bool readFictiveData();
     QVector<double> getAmplitudes() const;
     QVector<double> getTimes() const;
 private:
