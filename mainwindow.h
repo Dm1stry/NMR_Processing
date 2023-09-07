@@ -1,45 +1,12 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
-#include <QMainWindow>
-#include "data.h"
-#include "iprocessor.h"
-#include "tikhonovprocessor.h"
-#include "openfilewindow.h"
+#include <QWidget>
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-enum class Scale{
-    log,
-    linear
-};
-
-class MainWindow : public QMainWindow
+class MainWindow : public QWidget
 {
-    Q_OBJECT
-
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
-private slots:
-    void on_xScaleBox_textHighlighted(const QString &param);
-    void on_yScaleBox_textHighlighted(const QString &param);
-    void on_open_file_triggered();
-    void on_tikhonov_process_button_clicked();
-
-private:
-    inline void on_ScaleBox_textHighlighted(const QString &param, Scale &scale);
-    void redrawGraphs();
-    Ui::MainWindow *ui;
-    Data * data;
-    TikhonovProcessor tikhonov;
-    Scale x_scale;
-    Scale y_scale;
-    OpenFileWindow * open_file_window;
+    MainWindow(QWidget * parent = nullptr);
 };
-#endif // MAINWINDOW_HPP
+
+#endif
