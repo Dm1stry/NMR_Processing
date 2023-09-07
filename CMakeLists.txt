@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(NMR_Processing VERSION 0.1 LANGUAGES CXX)
+set(PROJECT_NAME NMR_Processing)
+
+project(${PROJECT_NAME} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(INCLUDE_DIRECTORIES dependencies/QCustomPlot)
@@ -26,23 +28,23 @@ set(PROJECT_SOURCES
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(
-        NMR_Processing
+        ${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 else()
     add_executable(
-        NMR_Processing
+        ${PROJECT_NAME}
         ${PROJECT_SOURCES}
     )
 endif()
 
-target_include_directories(NMR_Processing PRIVATE ${INCLUDE_DIRECTORIES})
+target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRECTORIES})
 
-target_link_libraries(NMR_Processing PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport)
 
 set_target_properties(
-    NMR_Processing
+    ${PROJECT_NAME}
     PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -52,5 +54,5 @@ set_target_properties(
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(NMR_Processing)
+    qt_finalize_executable(${PROJECT_NAME})
 endif()
