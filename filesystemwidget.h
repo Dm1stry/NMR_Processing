@@ -9,6 +9,12 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#define DEBUG
+
+#ifdef DEBUG
+    #include <QDebug>
+#endif
+
 class FileSystemWidget : public QWidget
 {
 Q_OBJECT

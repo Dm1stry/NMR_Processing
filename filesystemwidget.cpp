@@ -22,23 +22,39 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
 
     this->filesystem_model_->setRootPath(QDir::rootPath());
     this->filesystem_view_->setModel(this->filesystem_model_);
-    this->filesystem_view_->setCurrentIndex(this->filesystem_model_->index("C:"));
     widget_layout->addWidget(this->filesystem_view_);
 
     this->setLayout(widget_layout);
 
     this->directory_explorer_->setFileMode(QFileDialog::DirectoryOnly);
+    this->changeDirectory(QDir::rootPath());
 
-    connect(this->directory_select_button_, &QPushButton::clicked, [=](){changeDirectory(this->directory_edit_->text());});
+    //Change dir on select button click
+    connect(this->directory_select_button_, &QPushButton::clicked, [=](){this->changeDirectory(this->directory_edit_->text());});
+    //Open Directory Explorer on it's button
     connect(this->directory_explorer_button_, &QPushButton::clicked, this, &FileSystemWidget::openDirectoryExplorer);
+    //If directory selected - change dir to it, if file - emit signal, that file selected
+    connect(this->filesystem_view_, &QTreeView::doubleClicked, [=](){
+        if(this->filesystem_model_->isDir(this->filesystem_view_->currentIndex()))
+        {
+            this->changeDirectory(this->filesystem_model_->filePath(this->filesystem_view_->currentIndex()));
+        }
+        else
+        {
+            emit fileSelected(this->filesystem_model_->filePath(this->filesystem_view_->currentIndex()));
+        }
+        });
 }
 
 void FileSystemWidget::changeDirectory(const QString& directory_path)
 {
     QDir directory(directory_path);
     if(directory.exists(directory_path))
+    {
         current_directory_ = directory;
         filesystem_view_->setRootIndex(filesystem_model_->index(directory_path));
+        this->directory_edit_->setText(directory_path);
+    }
 }
 
 void FileSystemWidget::openDirectoryExplorer()
