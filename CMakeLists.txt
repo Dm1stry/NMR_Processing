@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(NMR_Processing VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-include_directories(dependencies/QCustomPlot/)
+set(INCLUDE_DIRECTORIES dependencies/QCustomPlot/)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -19,20 +19,9 @@ set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
         mainwindow.h
-        mainwindow.ui
+
         ./dependencies/QCustomPlot/qcustomplot.cpp
         ./dependencies/QCustomPlot/qcustomplot.h
-
-        iprocessor.h
-        tikhonovprocessor.h
-        tikhonovprocessor.cpp
-
-        data.h
-        data.cpp
-
-        openfilewindow.h
-        openfilewindow.cpp
-        openfilewindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -47,6 +36,8 @@ else()
         ${PROJECT_SOURCES}
     )
 endif()
+
+target_include_directories(NMR_Processing PRIVATE ${INCLUDE_DIRECTORIES})
 
 target_link_libraries(NMR_Processing PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport)
 
