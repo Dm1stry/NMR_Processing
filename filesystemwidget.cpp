@@ -44,6 +44,8 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
             emit fileSelected(this->filesystem_model_->filePath(this->filesystem_view_->currentIndex()));
         }
         });
+
+    connect(this->directory_edit_, &QLineEdit::returnPressed, [=](){this->changeDirectory(this->directory_edit_->text());});
 }
 
 void FileSystemWidget::changeDirectory(const QString& directory_path)
