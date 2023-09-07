@@ -7,6 +7,7 @@ class MainWindow : public QWidget
 {
 public:
     MainWindow(QWidget * parent = nullptr);
+
 };
 
 #endif
