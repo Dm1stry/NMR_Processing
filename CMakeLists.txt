@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(NMR_Processing VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(INCLUDE_DIRECTORIES dependencies/QCustomPlot/)
+set(INCLUDE_DIRECTORIES dependencies/QCustomPlot)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -20,8 +20,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
 
-        ./dependencies/QCustomPlot/qcustomplot.cpp
-        ./dependencies/QCustomPlot/qcustomplot.h
+        ${INCLUDE_DIRECTORIES}/qcustomplot.cpp
+        ${INCLUDE_DIRECTORIES}/qcustomplot.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
