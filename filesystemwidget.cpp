@@ -26,7 +26,7 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
 
     this->setLayout(widget_layout);
 
-    this->directory_explorer_->setFileMode(QFileDialog::DirectoryOnly);
+    this->directory_explorer_->setFileMode(QFileDialog::Directory);
     this->changeDirectory(QDir::rootPath());
 
     //Change dir on select button click
