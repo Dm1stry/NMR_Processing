@@ -2,7 +2,7 @@
 
 PlotWidget::PlotWidget(QWidget * parent /*= nullptr*/)
   : QWidget(parent),
-    plot_(new QCustomPlot(parent)),
+    plot_(new QCustomPlot),
     x_label_(new QLabel("X:")),
     x_box_(new QComboBox),
     y_label_(new QLabel("Y:")),

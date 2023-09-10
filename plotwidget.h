@@ -11,7 +11,6 @@
 class PlotWidget : public QWidget
 {
 Q_OBJECT
-
 public:
     PlotWidget(QWidget * parent = nullptr);
 private:
