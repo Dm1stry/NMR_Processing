@@ -11,10 +11,11 @@ class BaseProcessWidget : public QWidget
 {
 Q_OBJECT
 public:
-    BaseProcessWidget(QWidget * parent = nullptr);
+    BaseProcessWidget(const QString& name, QWidget * parent = nullptr);
+    const QString& getName() const;
 protected:
-    QList<QLabel> labels_;
-    QList<QLineEdit> parameter_edits_;
+    QString name_;
+    QMap<QString, QLineEdit*> parameters_;
     QPushButton * process_button_;
     QPushButton * clear_data_button_;
     QPushButton * clear_params_button_;
@@ -22,8 +23,8 @@ protected:
 signals:
     void clearData();
 public slots:
-    void clearParams();
-    void Process();
+    virtual void clearParams() = 0;
+    virtual void Process() = 0;
 };
 
 #endif

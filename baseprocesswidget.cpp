@@ -1,7 +1,8 @@
 #include "baseprocesswidget.h"
 
-BaseProcessWidget::BaseProcessWidget(QWidget * parent /*= nullptr*/)
+BaseProcessWidget::BaseProcessWidget(const QString& name, QWidget * parent /*= nullptr*/)
   : QWidget(parent),
+    name_(name),
     process_button_(new QPushButton("Обработать")),
     clear_data_button_(new QPushButton("Очистить данные")),
     clear_params_button_(new QPushButton("Сброс параметров")),
@@ -11,3 +12,9 @@ BaseProcessWidget::BaseProcessWidget(QWidget * parent /*= nullptr*/)
     this->buttons_layout_->addWidget(this->clear_data_button_, 1, 0, 1, 2);
     this->buttons_layout_->addWidget(this->process_button_, 0, 3, 2, 1);
 }
+
+const QString& BaseProcessWidget::getName() const
+{
+    return name_;
+}
+
