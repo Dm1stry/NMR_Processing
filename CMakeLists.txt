@@ -19,11 +19,13 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS PrintSupport Widgets REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.h        mainwindow.cpp
-        plotwidget.h        plotwidget.cpp
-        processwidget.h     processwidget.cpp
-        filesystemwidget.h  filesystemwidget.cpp
-        logwidget.h         logwidget.cpp
+        mainwindow.h            mainwindow.cpp
+        plotwidget.h            plotwidget.cpp
+        processwidget.h         processwidget.cpp
+        baseprocesswidget.h     baseprocesswidget.cpp
+        tikhonovprocesswidget.h tikhonovprocesswidget.cpp
+        filesystemwidget.h      filesystemwidget.cpp
+        logwidget.h             logwidget.cpp
 
         ${INCLUDE_DIRECTORIES}/qcustomplot.cpp
         ${INCLUDE_DIRECTORIES}/qcustomplot.h
