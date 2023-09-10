@@ -3,5 +3,9 @@
 ProcessWidget::ProcessWidget(QWidget * parent)
   : QTabWidget(parent)
 {
-    //this->addTab("Тихонов");
+    widgets_ << new TikhonovProcessWidget(this);
+    for(auto widget : widgets_)
+    {
+        this->addTab((QWidget *)widget, widget->getName());
+    } 
 }
