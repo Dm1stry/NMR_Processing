@@ -5,6 +5,9 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
 {
     this->parameters_.insert("T<sub>2, min</sub>", new QLineEdit);
     this->parameters_.insert("T<sub>2, max</sub>", new QLineEdit);
+    this->parameters_.insert("Параметр регуляризации", new QLineEdit);
+    this->parameters_.insert("Количество итераций", new QLineEdit);
+    this->parameters_.insert("Дискретизация времени", new QLineEdit);
 
     QVBoxLayout * widget_layout = new QVBoxLayout;
     QFormLayout * parameters_layout = new QFormLayout;
