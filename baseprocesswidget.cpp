@@ -11,6 +11,8 @@ BaseProcessWidget::BaseProcessWidget(const QString& name, QWidget * parent /*= n
     this->buttons_layout_->addWidget(this->clear_params_button_, 0, 0, 1, 2);
     this->buttons_layout_->addWidget(this->clear_data_button_, 1, 0, 1, 2);
     this->buttons_layout_->addWidget(this->process_button_, 0, 3, 2, 1);
+
+    process_button_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 }
 
 const QString& BaseProcessWidget::getName() const
