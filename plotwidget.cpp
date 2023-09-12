@@ -8,18 +8,20 @@ PlotWidget::PlotWidget(QWidget * parent /*= nullptr*/)
     y_label_(new QLabel("Y:")),
     y_box_(new QComboBox)
 {
-    QVBoxLayout * widget_layout = new QVBoxLayout;
+  QVBoxLayout * widget_layout = new QVBoxLayout;
 
-    widget_layout->addWidget(this->plot_);
+  widget_layout->addWidget(this->plot_);
 
-    QHBoxLayout * scale_layout = new QHBoxLayout;
+  QHBoxLayout * scale_layout = new QHBoxLayout;
 
-    scale_layout->addWidget(this->y_label_);
-    scale_layout->addWidget(this->y_box_);
-    scale_layout->addWidget(this->x_label_);
-    scale_layout->addWidget(this->x_box_);
+  scale_layout->addWidget(this->y_label_);
+  scale_layout->addWidget(this->y_box_);
+  scale_layout->addWidget(this->x_label_);
+  scale_layout->addWidget(this->x_box_);
 
-    widget_layout->addLayout(scale_layout);    
+  widget_layout->addLayout(scale_layout);    
 
-    this->setLayout(widget_layout);
+  this->setLayout(widget_layout);
+
+  this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }

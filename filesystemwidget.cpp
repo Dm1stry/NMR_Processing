@@ -26,6 +26,8 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
 
     this->setLayout(widget_layout);
 
+    this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+
     this->directory_explorer_->setFileMode(QFileDialog::Directory);
     this->changeDirectory(QDir::rootPath());
 

@@ -5,6 +5,7 @@ LogWidget::LogWidget(QWidget* parent)
 {
     this->setReadOnly(true);
     this->printLog("Программа запущена");
+    this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 }
 
 void LogWidget::printLog(const QString& information)

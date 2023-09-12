@@ -7,5 +7,6 @@ ProcessWidget::ProcessWidget(QWidget * parent)
     for(auto widget : widgets_)
     {
         this->addTab((QWidget *)widget, widget->getName());
-    } 
+    }
+    this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 }
