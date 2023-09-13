@@ -21,7 +21,8 @@ Cmake можно скачать [отсюда](https://cmake.org/download/)
 ```
 vcpkg install eigen3[core]:x64-windows
 ```
-После установки нужно сделать integrate install, чтобы vcpkg распихал заголовки и файлы библиотеки куда надо, а также приписал себе в vcpkg.cmake нужную конфигурацию
+После установки нужно сделать integrate install, чтобы vcpkg скопировал заголовки и файлы библиотеки куда нужно, а также прописал себе в vcpkg.cmake нужную конфигурацию
+
 Делается это как:
 ```
 vcpkg integrate install
