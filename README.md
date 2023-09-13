@@ -15,7 +15,7 @@ git clone https://github.com/Dm1stry/NMR_Processing.git
 
 Затем перейдите в репозиторий
 ```
-> cd NMR_Processing
+cd NMR_Processing
 ```
 
 Создайте папку, где будет собираться проект и перейдите в нее
