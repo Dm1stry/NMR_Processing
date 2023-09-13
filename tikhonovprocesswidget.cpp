@@ -1,4 +1,5 @@
 #include "tikhonovprocesswidget.h"
+#include "tikhonovprocessor.h"
 
 TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
   : BaseProcessWidget("Тихонов", parent)
@@ -20,14 +21,12 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
     widget_layout->addLayout(this->buttons_layout_);
 
     this->setLayout(widget_layout);
+
+    this->processor_ = new TikhonovProcessor(this);
+    connect(this->process_button_, SIGNAL(clicked()), (TikhonovProcessor *)this->processor_, SLOT(Process()));
 }
 
 /*virtual*/ void TikhonovProcessWidget::clearParams()
-{
-
-}
-
-/*virtual*/ void TikhonovProcessWidget::Process()
 {
 
 }

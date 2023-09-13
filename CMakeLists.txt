@@ -27,6 +27,9 @@ set(PROJECT_SOURCES
         filesystemwidget.h      filesystemwidget.cpp
         logwidget.h             logwidget.cpp
 
+        baseprocessor.h         baseprocessor.cpp
+        tikhonovprocessor.h     tikhonovprocessor.cpp
+
         ${INCLUDE_DIRECTORIES}/qcustomplot.cpp
         ${INCLUDE_DIRECTORIES}/qcustomplot.h
 )

@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QGridLayout>
 
+#include "baseprocessor.h"
+
 class BaseProcessWidget : public QWidget
 {
 Q_OBJECT
@@ -20,11 +22,12 @@ protected:
     QPushButton * clear_data_button_;
     QPushButton * clear_params_button_;
     QGridLayout * buttons_layout_;
+
+    BaseProcessor * processor_;
 signals:
     void clearData();
 public slots:
     virtual void clearParams() = 0;
-    virtual void Process() = 0;
 };
 
 #endif
