@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 
 #include "baseprocesswidget.h"
+#include "tikhonovprocessor.h"
 
 class TikhonovProcessWidget : public BaseProcessWidget
 {

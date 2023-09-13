@@ -1,5 +1,4 @@
 #include "tikhonovprocesswidget.h"
-#include "tikhonovprocessor.h"
 
 TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
   : BaseProcessWidget("Тихонов", parent)

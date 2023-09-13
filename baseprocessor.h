@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QPair>
+#include <QVector>
 
 class BaseProcessor : public QObject
 {
