@@ -6,6 +6,7 @@ project(${PROJECT_NAME} VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(INCLUDE_DIRECTORIES dependencies/QCustomPlot)
+set(WIDGET_DIRECTORY widgets)
 
 set(VCPKG_TARGET_TRIPLET x64-windows)
 set(CMAKE_TOOLCHAIN_FILE D:/Development/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake)
@@ -25,13 +26,13 @@ find_package(Eigen3 CONFIG REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.h            mainwindow.cpp
-        plotwidget.h            plotwidget.cpp
-        processwidget.h         processwidget.cpp
-        baseprocesswidget.h     baseprocesswidget.cpp
-        tikhonovprocesswidget.h tikhonovprocesswidget.cpp
-        filesystemwidget.h      filesystemwidget.cpp
-        logwidget.h             logwidget.cpp
+        ${WIDGET_DIRECTORY}/mainwindow.h            ${WIDGET_DIRECTORY}/mainwindow.cpp
+        ${WIDGET_DIRECTORY}/plotwidget.h            ${WIDGET_DIRECTORY}/plotwidget.cpp
+        ${WIDGET_DIRECTORY}/processwidget.h         ${WIDGET_DIRECTORY}/processwidget.cpp
+        ${WIDGET_DIRECTORY}/baseprocesswidget.h     ${WIDGET_DIRECTORY}/baseprocesswidget.cpp
+        ${WIDGET_DIRECTORY}/tikhonovprocesswidget.h ${WIDGET_DIRECTORY}/tikhonovprocesswidget.cpp
+        ${WIDGET_DIRECTORY}/filesystemwidget.h      ${WIDGET_DIRECTORY}/filesystemwidget.cpp
+        ${WIDGET_DIRECTORY}/logwidget.h             ${WIDGET_DIRECTORY}/logwidget.cpp
 
         baseprocessor.h         baseprocessor.cpp
         tikhonovprocessor.h     tikhonovprocessor.cpp
