@@ -22,8 +22,8 @@ private:
     double T_max_;
     size_t p_size_;
 
-signals:
-
+    QVector<double> t_;
+    QVector<double> A_;
 };
 
 #endif
