@@ -15,6 +15,7 @@ public slots:
     virtual void setParameter(QPair<QString, double>) = 0;
     virtual void updateData(QVector<double> t, QVector<double> A) = 0;
 signals:
+    void processingStarted();
     void processingStateUpdate(int);
     void processingDone();
 };

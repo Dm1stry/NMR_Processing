@@ -46,6 +46,12 @@ void TikhonovProcessor::Process()
 
 	VectorXd r = VectorXd::Zero(this->p_size_);
 
+	const uint step_to_update = iterations_ / 10;
+	uint current_update_iteration = step_to_update;
+	uint current_state = 0;
+
+	emit processingStarted();
+	emit processingStateUpdate(0);
 	for(size_t iteration = 0; iteration < this->iterations_; ++iteration)
 	{
 		r = W_K_t_s + W_alpha * r;
@@ -55,6 +61,11 @@ void TikhonovProcessor::Process()
 			{
 				*r_iterator = 0;
 			}
+		}
+		if(iteration == current_update_iteration)
+		{
+			current_update_iteration += step_to_update;
+			emit processingStateUpdate(++current_state);
 		}
 	}
 
