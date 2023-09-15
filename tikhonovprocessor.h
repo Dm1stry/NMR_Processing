@@ -20,10 +20,10 @@ public:
 
 private:
     double alpha_;
-    size_t iterations_;
+    uint iterations_;
     double T_min_;
     double T_max_;
-    size_t p_size_;
+    uint p_size_;
 
     QVector<double> t_;
     QVector<double> A_;

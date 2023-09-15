@@ -21,9 +21,9 @@ void TikhonovProcessor::Process()
     }
   //---------------------------------------------
 	MatrixXd K(p_size_, t_.size());
-	for(size_t p_index = 0; p_index < p_size_; ++p_index)
+	for(uint p_index = 0; p_index < p_size_; ++p_index)
 	{
-		for(int t_index = 0; t_index < this->t_.size(); ++t_index)
+		for(uint t_index = 0; t_index < this->t_.size(); ++t_index)
 		{
 			K(p_index, t_index) = exp(-p_[p_index] * t_[t_index]);
 		}
