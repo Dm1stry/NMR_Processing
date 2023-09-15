@@ -7,7 +7,6 @@
 #include <QTextStream>
 #include <QString>
 #include <QStringList>
-
 #include <QRegExp>
 
 
