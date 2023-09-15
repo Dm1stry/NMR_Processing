@@ -5,6 +5,11 @@
 #include <QVector>
 #include <QFile>
 #include <QTextStream>
+#include <QString>
+#include <QStringList>
+
+#include <QRegExp>
+
 
 class NMRData : public QObject
 {
