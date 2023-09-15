@@ -20,10 +20,13 @@ void TikhonovProcessor::Process()
     	p_min += p_step;
     }
   //---------------------------------------------
-	MatrixXd K(p_size_, t_.size());
+
+  //-------------- Regularization ---------------
+	uint t_size = this->t_.size();
+	MatrixXd K(p_size_, t_size);
 	for(uint p_index = 0; p_index < p_size_; ++p_index)
 	{
-		for(uint t_index = 0; t_index < this->t_.size(); ++t_index)
+		for(uint t_index = 0; t_index < t_size; ++t_index)
 		{
 			K(p_index, t_index) = exp(-p_[p_index] * t_[t_index]);
 		}
@@ -54,6 +57,10 @@ void TikhonovProcessor::Process()
 			}
 		}
 	}
+
+	//--------------------------------------------------
+
+	//--------------- Saving results -------------------
 
 	VectorXd A = K * r;
 	A_appr_ = QVector<double>(A.begin(), A.end());
