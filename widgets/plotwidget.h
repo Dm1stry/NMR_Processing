@@ -19,6 +19,8 @@ private:
     QLabel * y_label_;
     QComboBox * x_box_;
     QComboBox * y_box_;
+public slots:
+    void updateData(QVector<double> x, QVector<double> y, int number = 0);
 };
 
 #endif
