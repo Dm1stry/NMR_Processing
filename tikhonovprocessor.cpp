@@ -85,6 +85,7 @@ void TikhonovProcessor::Process()
 	p_ = QVector<double>(r.begin(), r.end());
 
 	emit processingDone();
+	emit processingStateUpdate(0);
 }
 
 void TikhonovProcessor::setParameter(QPair<QString, double> parameter)

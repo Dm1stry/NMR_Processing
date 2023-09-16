@@ -33,3 +33,9 @@ const QString& BaseProcessWidget::getName() const
     return name_;
 }
 
+
+/*virtual*/ void BaseProcessWidget::updateData(const QVector<double>& t, const QVector<double>& A)
+{
+    this->processor_->updateData(t, A);
+    this->process_button_->setEnabled(true);
+}

@@ -10,6 +10,7 @@
 #include "processwidget.h"
 #include "logwidget.h"
 #include "plotwidget.h"
+#include "nmrdata.h"
 
 class MainWindow : public QWidget
 {
@@ -17,6 +18,7 @@ Q_OBJECT
 public:
     MainWindow(QWidget * parent = nullptr);
 private:
+    NMRData * data_;
     FileSystemWidget * filesystem_widget_;
     LogWidget * log_widget_;
     PlotWidget * plot_widget_;

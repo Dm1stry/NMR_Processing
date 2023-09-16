@@ -2,6 +2,7 @@
 
 MainWindow::MainWindow(QWidget * parent)
   : QWidget(parent),
+    data_(new NMRData(this)),
     filesystem_widget_(new FileSystemWidget),
     log_widget_(new LogWidget),
     plot_widget_(new PlotWidget),
@@ -27,4 +28,8 @@ MainWindow::MainWindow(QWidget * parent)
     main_layout->addLayout(right_layout);
 
     this->setLayout(main_layout);
+
+    connect(this->filesystem_widget_, &FileSystemWidget::fileSelected, this->data_, &NMRData::readAsCPMG);
+	connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->plot_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));
+	connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->process_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));
 }

@@ -10,3 +10,11 @@ ProcessWidget::ProcessWidget(PlotWidget * plot_widget, PlotWidget * spectrum_wid
     }
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 }
+
+void ProcessWidget::updateData(const QVector<double>& t, const QVector<double>&A)
+{
+	for(auto widget : widgets_)
+	{
+		widget->updateData(t, A);
+	}
+}

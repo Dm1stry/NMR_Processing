@@ -34,6 +34,7 @@ signals:
     void clearData();
 public slots:
     virtual void clearParams() = 0;
+    virtual void updateData(const QVector<double>& t, const QVector<double>& A);
 };
 
 #endif

@@ -32,4 +32,7 @@ PlotWidget::PlotWidget(QWidget * parent /*= nullptr*/)
 void PlotWidget::updateData(QVector<double> x, QVector<double> y, int number)
 {
 	this->plot_->graph(number)->setData(x, y);
+	this->plot_->xAxis->setRange(0, x.last());
+	this->plot_->yAxis->setRange(0, *(std::max_element(y.begin(), y.end())));
+	this->plot_->replot();
 }

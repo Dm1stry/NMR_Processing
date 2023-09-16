@@ -13,7 +13,6 @@ class TikhonovProcessWidget : public BaseProcessWidget
 Q_OBJECT
 public:
     TikhonovProcessWidget(PlotWidget * plot, PlotWidget * spectrum, QWidget * parent = nullptr);
-private:
 public slots:
     virtual void clearParams();
 };
