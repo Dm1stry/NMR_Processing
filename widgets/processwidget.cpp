@@ -1,9 +1,9 @@
 #include "processwidget.h"
 
-ProcessWidget::ProcessWidget(QWidget * parent)
+ProcessWidget::ProcessWidget(PlotWidget * plot_widget, PlotWidget * spectrum_widget, QWidget * parent)
   : QTabWidget(parent)
 {
-    widgets_ << new TikhonovProcessWidget(this);
+    widgets_ << new TikhonovProcessWidget(plot_widget, spectrum_widget, this);
     for(auto widget : widgets_)
     {
         this->addTab((QWidget *)widget, widget->getName());

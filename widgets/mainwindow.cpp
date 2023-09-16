@@ -3,10 +3,10 @@
 MainWindow::MainWindow(QWidget * parent)
   : QWidget(parent),
     filesystem_widget_(new FileSystemWidget),
-    process_widget_(new ProcessWidget),
     log_widget_(new LogWidget),
     plot_widget_(new PlotWidget),
-    spectrum_widget_(new PlotWidget)
+    spectrum_widget_(new PlotWidget),
+    process_widget_(new ProcessWidget(plot_widget_, spectrum_widget_))
 {
     QHBoxLayout * main_layout = new QHBoxLayout;
 

@@ -8,7 +8,9 @@ TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
 
 void TikhonovProcessor::Process()
 {
-	using namespace Eigen; 
+	using namespace Eigen;
+	
+	emit processingStarted();
   //--------Creating of a logspace---------------
     p_.reserve(this->p_size_);
     double p_min = -log10(this->T_max_);
@@ -50,7 +52,7 @@ void TikhonovProcessor::Process()
 	uint current_update_iteration = step_to_update;
 	uint current_state = 0;
 
-	emit processingStarted();
+	
 	emit processingStateUpdate(0);
 	for(size_t iteration = 0; iteration < this->iterations_; ++iteration)
 	{

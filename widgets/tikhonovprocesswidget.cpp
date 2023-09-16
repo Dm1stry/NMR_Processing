@@ -1,7 +1,7 @@
 #include "tikhonovprocesswidget.h"
 
-TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
-  : BaseProcessWidget("Тихонов", parent)
+TikhonovProcessWidget::TikhonovProcessWidget(PlotWidget * plot, PlotWidget * spectrum, QWidget * parent)
+  : BaseProcessWidget("Тихонов", plot, spectrum, parent)
 {
     this->parameters_.insert("T<sub>2, min</sub>", new QLineEdit);
     this->parameters_.insert("T<sub>2, max</sub>", new QLineEdit);
@@ -23,6 +23,8 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
 
     this->processor_ = new TikhonovProcessor(this);
     connect(this->process_button_, SIGNAL(clicked()), (TikhonovProcessor *)this->processor_, SLOT(Process()));
+    
+    connect(this->processor_, SIGNAL(processingState(int)), this->progress_bar_, SLOT(setValue(int)));
 }
 
 /*virtual*/ void TikhonovProcessWidget::clearParams()

@@ -10,7 +10,7 @@ class ProcessWidget : public QTabWidget
 {
 Q_OBJECT
 public:
-    ProcessWidget(QWidget * patent = nullptr);
+    ProcessWidget(PlotWidget * plot_widget, PlotWidget * spectrum_widget, QWidget * patent = nullptr);
 private:
     QVector<BaseProcessWidget *> widgets_;    
 };
