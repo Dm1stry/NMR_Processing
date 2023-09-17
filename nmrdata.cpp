@@ -59,6 +59,8 @@ void NMRData::setProcessedData(const NMRDataStruct& processed_data)
     this->t_approximated_ = processed_data.t;
     this->p_ = processed_data.p;
     this->pt_ = processed_data.pt;
+
+    emit processedDataUpdated(processed_data);
 }
 
 void NMRData::clearRawData()
