@@ -11,7 +11,7 @@ void ProcessWidget::addProcessWidget(BaseProcessWidget * widget)
 {
 	widgets_ << widget;
 	this->addTab((QWidget *)widget, widget->getName());
-	//connect(widget->getProcessor(), SIGNAL(processingDone(const NMRDataStruct&)), this, SIGNAL(processingDone(const NMRDataStruct&)));
+	connect(widget->getProcessor(), SIGNAL(processingDone(const NMRDataStruct&)), this, SIGNAL(processingDone(const NMRDataStruct&)));
 }
 
 void ProcessWidget::updateData(const NMRDataStruct& raw_data)
