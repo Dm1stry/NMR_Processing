@@ -3,7 +3,13 @@
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
   : BaseProcessor(parent)
 {
-    
+    //temoporary set up
+
+	alpha_ = 200;
+	iterations_ = 100;
+	T_min_ = 100;
+	T_max_ = 1e7;
+	p_size_ = 1000;
 }
 
 void TikhonovProcessor::Process()
@@ -52,8 +58,6 @@ void TikhonovProcessor::Process()
 	uint current_update_iteration = step_to_update;
 	uint current_state = 0;
 
-	
-	emit processingStateUpdate(0);
 	for(size_t iteration = 0; iteration < this->iterations_; ++iteration)
 	{
 		r = W_K_t_s + W_alpha * r;
@@ -67,8 +71,9 @@ void TikhonovProcessor::Process()
 		if(iteration == current_update_iteration)
 		{
 			current_update_iteration += step_to_update;
-			emit processingStateUpdate(++current_state);
+			emit processingStateUpdate(current_state += 10);
 		}
+		//QCoreApplication::processEvents();
 	}
 
 	//--------------------------------------------------
@@ -84,36 +89,43 @@ void TikhonovProcessor::Process()
 	}
 	p_ = QVector<double>(r.begin(), r.end());
 
-	emit processingDone();
+	NMRDataStruct processed_data {
+		.A = this->A_appr_,
+		.t = this->t_,
+		.p = this->p_,
+		.pt = this->pt_
+	};
+
+	emit processingDone(processed_data);
 	emit processingStateUpdate(0);
 }
 
-void TikhonovProcessor::setParameter(QPair<QString, double> parameter)
+void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
 {
-  if(parameter.first == "Alpha")
+  if(parameter_name == "Alpha")
   {
-    this->alpha_ = parameter.second;
+    this->alpha_ = parameter_value.value<double>();
   }
-  if(parameter.first == "Iterations")
+  if(parameter_name == "Iterations")
   {
-    this->iterations_ = parameter.second;
+    this->iterations_ = parameter_value.value<uint>();
   }
-  if(parameter.first == "T_min")
+  if(parameter_name == "T_min")
   {
-    this->T_min_ = parameter.second;
+    this->T_min_ = parameter_value.value<double>();
   }
-  if(parameter.first == "T_max")
+  if(parameter_name == "T_max")
   {
-    this->T_max_ = parameter.second;
+    this->T_max_ = parameter_value.value<double>();
   }
-  if(parameter.first == "p_size")
+  if(parameter_name == "p_size")
   {
-    this->p_size_ = parameter.second;
+    this->p_size_ = parameter_value.value<double>();
   }
 }
 
-void TikhonovProcessor::updateData(QVector<double> t, QVector<double> A)
+void TikhonovProcessor::updateData(const NMRDataStruct& raw_data)
 {
-  this->t_ = t;
-  this->A_ = A;
+  this->t_ = raw_data.t;
+  this->A_ = raw_data.A;
 }

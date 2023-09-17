@@ -4,8 +4,12 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include <vector>
+#include <QCoreApplication>
+#include <QVariant>
+#include <QString>
 
 #include "baseprocessor.h"
+
 
 
 class TikhonovProcessor : public BaseProcessor
@@ -15,8 +19,8 @@ public:
     TikhonovProcessor(QObject * parent = nullptr);
 
     virtual void Process();
-    virtual void setParameter(QPair<QString, double> parameter);
-    virtual void updateData(QVector<double> t, QVector<double> A);
+    virtual void updateParameter(QString parameter_name, QVariant parameter_value);
+    virtual void updateData(const NMRDataStruct& raw_data);
 
 private:
     double alpha_;
