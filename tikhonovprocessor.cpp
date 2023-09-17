@@ -104,23 +104,23 @@ void TikhonovProcessor::updateParameter(QString parameter_name, QVariant paramet
 {
   if(parameter_name == "Alpha")
   {
-    this->alpha_ = parameter_value.value<double>();
+    this->alpha_ = parameter_value.toDouble();
   }
   if(parameter_name == "Iterations")
   {
-    this->iterations_ = parameter_value.value<uint>();
+    this->iterations_ = parameter_value.toUInt();
   }
   if(parameter_name == "T_min")
   {
-    this->T_min_ = parameter_value.value<double>();
+    this->T_min_ = parameter_value.toDouble();
   }
   if(parameter_name == "T_max")
   {
-    this->T_max_ = parameter_value.value<double>();
+    this->T_max_ = parameter_value.toDouble();
   }
   if(parameter_name == "p_size")
   {
-    this->p_size_ = parameter_value.value<double>();
+    this->p_size_ = parameter_value.toUInt();
   }
 }
 

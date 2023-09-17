@@ -10,11 +10,11 @@ class ProcessWidget : public QTabWidget
 {
 Q_OBJECT
 public:
-    ProcessWidget(PlotWidget * plot_widget, PlotWidget * spectrum_widget, QWidget * patent = nullptr);
+    ProcessWidget(QWidget * patent = nullptr);
 private:
     QVector<BaseProcessWidget *> widgets_;
 public slots:
-    void updateData(const QVector<double>& t, const QVector<double>& A);
+    void updateData(const NMRDataStruct& raw_data);
 };
 
 #endif

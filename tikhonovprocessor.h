@@ -5,8 +5,6 @@
 #include <cmath>
 #include <vector>
 #include <QCoreApplication>
-#include <QVariant>
-#include <QString>
 
 #include "baseprocessor.h"
 
@@ -18,9 +16,9 @@ Q_OBJECT
 public:
     TikhonovProcessor(QObject * parent = nullptr);
 
-    virtual void Process();
-    virtual void updateParameter(QString parameter_name, QVariant parameter_value);
-    virtual void updateData(const NMRDataStruct& raw_data);
+    /*virtual*/ void Process() Q_DECL_OVERRIDE;
+    /*virtual*/ void updateParameter(QString parameter_name, QVariant parameter_value) Q_DECL_OVERRIDE;
+    /*virtual*/ void updateData(const NMRDataStruct& raw_data) Q_DECL_OVERRIDE;
 
 private:
     double alpha_;

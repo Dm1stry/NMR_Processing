@@ -1,9 +1,9 @@
 #include "processwidget.h"
 
-ProcessWidget::ProcessWidget(PlotWidget * plot_widget, PlotWidget * spectrum_widget, QWidget * parent)
+ProcessWidget::ProcessWidget(QWidget * parent)
   : QTabWidget(parent)
 {
-    widgets_ << new TikhonovProcessWidget(plot_widget, spectrum_widget, this);
+    widgets_ << new TikhonovProcessWidget(this);
     for(auto widget : widgets_)
     {
         this->addTab((QWidget *)widget, widget->getName());
@@ -11,10 +11,10 @@ ProcessWidget::ProcessWidget(PlotWidget * plot_widget, PlotWidget * spectrum_wid
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 }
 
-void ProcessWidget::updateData(const QVector<double>& t, const QVector<double>&A)
+void ProcessWidget::updateData(const NMRDataStruct& raw_data)
 {
 	for(auto widget : widgets_)
 	{
-		widget->updateData(t, A);
+		widget->updateData(raw_data);
 	}
 }

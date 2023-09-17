@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QPair>
 #include <QVector>
+#include <QVariant>
+#include <QString>
 
 #include "nmrdatastruct.h"
 
