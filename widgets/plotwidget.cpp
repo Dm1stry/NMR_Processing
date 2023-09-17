@@ -42,6 +42,16 @@ void PlotWidget::updateData(QVector<double> x, QVector<double> y, int number)
 	this->plot_->replot();
 }
 
+void PlotWidget::updateAsPlot(const NMRDataStruct& nmr_data, int number)
+{
+	this->updateData(nmr_data.t, nmr_data.A, number);
+}
+
+void PlotWidget::updateAsSpectrum(const NMRDataStruct& nmr_data, int number)
+{
+	this->updateData(nmr_data.pt, nmr_data.p, number);
+}
+
 void PlotWidget::removeGraph(int number)
 {
 	this->plot_->removeGraph(this->graph_numbers_[number]);

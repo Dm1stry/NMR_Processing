@@ -9,6 +9,8 @@
 #include <QVBoxLayout>
 #include "dependencies/QCustomPlot/qcustomplot.h"
 
+#include "nmrdatastruct.h"
+
 class PlotWidget : public QWidget
 {
 Q_OBJECT
@@ -24,6 +26,8 @@ private:
     QMap<int, int> graph_numbers_;
 public slots:
     void updateData(QVector<double> x, QVector<double> y, int number = 0);
+    void updateAsPlot(const NMRDataStruct& nmr_data, int number = 0);
+    void updateAsSpectrum(const NMRDataStruct& nmr_data, int number = 0);
     void removeGraph(int number);
     void clear();
 };
