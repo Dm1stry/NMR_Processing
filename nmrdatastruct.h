@@ -1,3 +1,5 @@
+#ifndef NMRDATASTRUCT_H
+#define NMRDATASTRUCT_H
 #include <QVector>
 
 struct NMRDataStruct
@@ -7,3 +9,5 @@ struct NMRDataStruct
     QVector<double> p;
     QVector<double> pt;
 };
+
+#endif
