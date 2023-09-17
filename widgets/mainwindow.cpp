@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget * parent)
     log_widget_(new LogWidget),
     plot_widget_(new PlotWidget),
     spectrum_widget_(new PlotWidget),
-    process_widget_(new ProcessWidget(plot_widget_, spectrum_widget_))
+    process_widget_(new ProcessWidget)
 {
     QHBoxLayout * main_layout = new QHBoxLayout;
 
@@ -30,6 +30,12 @@ MainWindow::MainWindow(QWidget * parent)
     this->setLayout(main_layout);
 
     connect(this->filesystem_widget_, &FileSystemWidget::fileSelected, this->data_, &NMRData::readAsCPMG);
-	connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->plot_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));
-	connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->process_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));
+	connect(this->data_, &NMRData::rawDataUpdated, this->plot_widget_, &PlotWidget::updateAsPlot);
+
+    connect(this->data_, &NMRData::rawDataUpdated, this->process_widget_, &ProcessWidget::updateData);
+
+    connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->plot_widget_, SLOT(updateAsPlot(const NMRDataStruct&, 1)));
+    connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->plot_widget_, SLOT(updateAsSpectrum(const NMRDataStruct&)));
+
+	//connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->process_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));
 }
