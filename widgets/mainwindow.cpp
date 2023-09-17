@@ -30,9 +30,11 @@ MainWindow::MainWindow(QWidget * parent)
     this->setLayout(main_layout);
 
     connect(this->filesystem_widget_, &FileSystemWidget::fileSelected, this->data_, &NMRData::readAsCPMG);
-	connect(this->data_, &NMRData::rawDataUpdated, this->plot_widget_, &PlotWidget::updateAsPlot);
+	connect(this->data_, SIGNAL(rawDataUpdated(const NMRDataStruct&)), this->plot_widget_, SLOT(updateAsPlot(const NMRDataStruct&)));
 
     connect(this->data_, &NMRData::rawDataUpdated, this->process_widget_, &ProcessWidget::updateData);
+
+    connect(this->process_widget_, &ProcessWidget::updateData, this->data_, &NMRData::setProcessedData);
 
     connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->plot_widget_, SLOT(updateAsPlot(const NMRDataStruct&, 1)));
     connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->plot_widget_, SLOT(updateAsSpectrum(const NMRDataStruct&)));
