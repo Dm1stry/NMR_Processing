@@ -16,6 +16,7 @@ public slots:
     virtual void Process() = 0;
     virtual void updateParameter(QString parameter_name, QVariant parameter_value) = 0;
     virtual void updateData(const NMRDataStruct& raw_data) = 0;
+    void clearData();
 signals:
     void processingStarted();
     void processingStateUpdate(const uchar&);  // Processing state in percentages
