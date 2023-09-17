@@ -1,6 +1,7 @@
 #ifndef PLOTWIDGET_H
 #define PLOTWIDGET_H
 
+#include <QMap>
 #include <QWidget>
 #include <QLabel>
 #include <QComboBox>
@@ -19,8 +20,12 @@ private:
     QLabel * y_label_;
     QComboBox * x_box_;
     QComboBox * y_box_;
+
+    QMap<int, int> graph_numbers_;
 public slots:
     void updateData(QVector<double> x, QVector<double> y, int number = 0);
+    void removeGraph(int number);
+    void clear();
 };
 
 #endif
