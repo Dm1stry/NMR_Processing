@@ -9,6 +9,8 @@
 #include <QStringList>
 #include <QRegExp>
 
+#include "nmrdatastruct.h"
+
 
 class NMRData : public QObject
 {
@@ -18,12 +20,23 @@ public:
 private:
     QVector<double> A_;
     QVector<double> t_;
+    QVector<double> A_approximated_;
+    QVector<double> t_approximated_;
+    QVector<double> p_;
+    QVector<double> pt_;
+
 public slots:
     void readAsCPMG(const QString& filepath);
-    void setData(QVector<double> A, QVector<double> t);
+    void setRawData(const NMRDataStruct& raw_data);
+    void setProcessedData(const NMRDataStruct& processed_data);
+    void clearRawData();
+    void clearProcessedData();
+    void clearData();
+    
 signals:
     void wrongData();
-    void dataUpdated(const QVector<double>&, const QVector<double>&);
+    void rawDataUpdated(const NMRDataStruct&);
+    void processedDataUpdated(const NMRDataStruct&);
 };
 
 #endif

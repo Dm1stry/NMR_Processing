@@ -16,7 +16,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS PrintSupport Widgets REQUIRED)
@@ -38,6 +38,7 @@ set(PROJECT_SOURCES
         tikhonovprocessor.h     tikhonovprocessor.cpp
 
         nmrdata.h               nmrdata.cpp
+        nmrdatastruct.h
 
         ${INCLUDE_DIRECTORIES}/qcustomplot.cpp
         ${INCLUDE_DIRECTORIES}/qcustomplot.h
