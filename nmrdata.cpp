@@ -38,6 +38,13 @@ void NMRData::readAsCPMG(const QString& filepath)
         file.close();
         this->A_.shrink_to_fit();
         this->t_.shrink_to_fit();
+
+        double max_element = *std::max_element(this->A_.begin(), this->A_.end());
+        for(auto A_it = A_.begin(); A_it < A_.end(); ++A_it)
+        {
+            *A_it = *A_it / max_element; 
+        }
+        
         NMRDataStruct raw_data;
         raw_data.A = A_;
         raw_data.t = t_;
@@ -53,6 +60,7 @@ void NMRData::setRawData(const NMRDataStruct& raw_data)
     {
         this->A_ = raw_data.A;
         this->t_ = raw_data.t;
+        emit rawDataUpdated(raw_data);
     }
     else
     {
