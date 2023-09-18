@@ -12,6 +12,7 @@ PlotWidget::PlotWidget(QWidget * parent /*= nullptr*/)
 	this->plot_->addGraph();
 	graph_numbers_[0] = 0;
 	this->plot_->graph(0)->rescaleAxes(true);
+	this->plot_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
 	QVBoxLayout * widget_layout = new QVBoxLayout;
 
 	widget_layout->addWidget(this->plot_);
