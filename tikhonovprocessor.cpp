@@ -18,13 +18,13 @@ void TikhonovProcessor::Process()
 	
 	emit processingStarted();
   //--------Creating of a logspace---------------
-    p_.reserve(this->p_size_);
+    p_.reserve(this->p_size_ + 1);
     double p_min = -log10(this->T_max_);
     double p_max = -log10(this->T_min_);
     double p_step = (p_max - p_min) / (this->p_size_ - 1);
     for(size_t i = 0; i < this->p_size_; ++i)
     {
-    	p_.push_back(p_min);
+    	p_.push_back(pow(10, p_min));
     	p_min += p_step;
     }
   //---------------------------------------------
@@ -73,7 +73,7 @@ void TikhonovProcessor::Process()
 			current_update_iteration += step_to_update;
 			emit processingStateUpdate(current_state += 10);
 		}
-		//QCoreApplication::processEvents();
+		QCoreApplication::processEvents();
 	}
 
 	//--------------------------------------------------
@@ -82,7 +82,7 @@ void TikhonovProcessor::Process()
 
 	VectorXd A = K * r;
 	A_appr_ = QVector<double>(A.begin(), A.end());
-	pt_.reserve(p_size_);
+	pt_.reserve(p_size_ + 1);
 	for(auto p : p_)
 	{
 		pt_.push_back(1/p);
@@ -96,8 +96,25 @@ void TikhonovProcessor::Process()
 		.pt = this->pt_
 	};
 
-	emit processingDone(processed_data);
+	emit processingDone(this->convert_spectrum(processed_data));
 	emit processingStateUpdate(0);
+
+}  //void TikhonovProcessor::Process()
+
+NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)
+{
+	//----------- Get curve local maximums ----
+	//-----------------------------------------
+
+	//---------- Get curve local minimums -----
+	//-----------------------------------------
+
+	//---------- Get squares under peaks (components) ------
+	//-----------------------------------------
+
+	//---------- Change spectrum appearance ---
+	//-----------------------------------------
+	return processed_data;
 }
 
 void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
@@ -106,19 +123,19 @@ void TikhonovProcessor::updateParameter(QString parameter_name, QVariant paramet
   {
     this->alpha_ = parameter_value.toDouble();
   }
-  if(parameter_name == "Iterations")
+  else if(parameter_name == "Iterations")
   {
     this->iterations_ = parameter_value.toUInt();
   }
-  if(parameter_name == "T_min")
+  else if(parameter_name == "T_min")
   {
     this->T_min_ = parameter_value.toDouble();
   }
-  if(parameter_name == "T_max")
+  else if(parameter_name == "T_max")
   {
     this->T_max_ = parameter_value.toDouble();
   }
-  if(parameter_name == "p_size")
+  else if(parameter_name == "p_size")
   {
     this->p_size_ = parameter_value.toUInt();
   }

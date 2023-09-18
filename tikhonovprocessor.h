@@ -21,6 +21,8 @@ public:
     /*virtual*/ void updateData(const NMRDataStruct& raw_data) Q_DECL_OVERRIDE;
 
 private:
+    NMRDataStruct convert_spectrum(NMRDataStruct& processed_data);
+
     double alpha_;
     uint iterations_;
     double T_min_;
