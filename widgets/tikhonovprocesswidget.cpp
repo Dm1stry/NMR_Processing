@@ -8,14 +8,8 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
 	this->addParameter("T2min", "T<sub>2, min</sub>", 1e2);
 	this->addParameter("T2max", "T<sub>2, max</sub>", 1e7);
 	this->addParameter("alpha", "Параметр регуляризации", 200);
-	this->addParameter("iterations", "Количество итераций", 1000);
+	this->addParameter("iterations", "Количество итераций", 100);
 	this->addParameter("p_size", "Дискретизация времени", 100);
-    /*this->parameters_.insert(, new QLineEdit);
-    this->parameters_.insert("T<sub>2, max</sub>", new QLineEdit);
-    this->parameters_.insert("Параметр регуляризации", new QLineEdit);
-    this->parameters_.insert("Количество итераций", new QLineEdit);
-    this->parameters_.insert("Дискретизация времени", new QLineEdit);
-	*/
 
     QVBoxLayout * widget_layout = new QVBoxLayout;
     QGridLayout * parameters_layout = this->getParametersLayout();
