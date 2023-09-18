@@ -37,6 +37,8 @@ set(PROJECT_SOURCES
         baseprocessor.h         baseprocessor.cpp
         tikhonovprocessor.h     tikhonovprocessor.cpp
 
+        mathfunctions.h         mathfunctions.cpp
+
         nmrdata.h               nmrdata.cpp
         nmrdatastruct.h
 
