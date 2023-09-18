@@ -1,4 +1,5 @@
 *.swp
 *.user
 build/
+Release_build/
 .vscode/
