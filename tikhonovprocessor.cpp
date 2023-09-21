@@ -103,10 +103,22 @@ void TikhonovProcessor::Process()
 
 NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)
 {
-	//----------- Get curve local maximums ----
-	//-----------------------------------------
-
-	//---------- Get curve local minimums -----
+	//----------- Get curve local maximums and minimums ----
+	QVector<int> max_indexes;
+	QVector<int> min_indexes;
+	max_indexes.reserve(10);
+	min_indexes.reserve(20);
+	for(int i = 1; i < processed_data.p.size(); ++i)
+	{
+		if(processed_data.p[i - 1] < processed_data.p[i] && processed_data.p[i] > processed_data.p[i + 1])
+		{
+			max_indexes.push_back(i);
+		}
+		if((processed_data.p[i - 1] >= processed_data.p[i] && processed_data.p[i] < processed_data.p[i + 1]) || (processed_data.p[i - 1] > processed_data.p[i] && processed_data.p[i] <= processed_data.p[i + 1]))
+		{
+			min_indexes.push_back(i);
+		}
+	}
 	//-----------------------------------------
 
 	//---------- Get squares under peaks (components) ------

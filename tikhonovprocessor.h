@@ -4,9 +4,12 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 #include <QCoreApplication>
+#include <QVector>
 
 #include "baseprocessor.h"
+#include "mathfunctions.h"
 
 
 
