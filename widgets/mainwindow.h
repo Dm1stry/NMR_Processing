@@ -24,6 +24,9 @@ private:
     PlotWidget * plot_widget_;
     PlotWidget * spectrum_widget_;
     ProcessWidget * process_widget_;
+
+    inline void connections();
+    inline void layoutSetup();
 };
 
 #endif
