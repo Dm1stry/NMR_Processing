@@ -37,7 +37,6 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
     connect(this->filesystem_view_, &QTreeView::doubleClicked, [=](){
         this->onPathSelected(this->filesystem_model_->filePath(this->filesystem_view_->currentIndex()));
     });
-
     connect(this->directory_edit_, &QLineEdit::returnPressed, [=](){this->changeDirectory(this->directory_edit_->text());});
 }
 
