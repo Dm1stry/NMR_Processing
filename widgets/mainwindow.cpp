@@ -39,5 +39,7 @@ MainWindow::MainWindow(QWidget * parent)
     connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->plot_widget_, SLOT(updateAsPlot(const NMRDataStruct&, 1)));
     connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->spectrum_widget_, SLOT(updateAsSpectrum(const NMRDataStruct&)));
 
+    connect(this->process_widget_, SIGNAL(clearData()), this->data_, SLOT(clearData()));
+    //connect(this->data_, SIGNAL())
 	//connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->process_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));
 }
