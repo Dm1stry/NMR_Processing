@@ -6,23 +6,44 @@ PlotWidget::PlotWidget(QWidget * parent /*= nullptr*/)
     x_label_(new QLabel("X:")),
     x_box_(new QComboBox),
     y_label_(new QLabel("Y:")),
-    y_box_(new QComboBox)
+    y_box_(new QComboBox),
+	scale_types_({{"Линейно", QCPAxis::ScaleType::stLinear}, {"Логарифмически", QCPAxis::ScaleType::stLogarithmic}})
 {
 
 	this->plot_->addGraph();
 	graph_numbers_[0] = 0;
 	this->plot_->graph(0)->rescaleAxes(true);
 	this->plot_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+	
+	layoutSetup();
+	connections();
+}
+
+inline void PlotWidget::connections()
+{
+	connect(this->x_box_, SIGNAL(activated(int)), this, SLOT(rescaleXAxis(int)));
+	connect(this->y_box_, SIGNAL(activated(int)), this, SLOT(rescaleYAxis(int)));
+}
+
+inline void PlotWidget::layoutSetup()
+{
 	QVBoxLayout * widget_layout = new QVBoxLayout;
 
 	widget_layout->addWidget(this->plot_);
 
 	QHBoxLayout * scale_layout = new QHBoxLayout;
+	
+	for(auto scale_type_ : scale_types_)
+	{
+		this->x_box_->addItem(scale_type_.first);
+		this->y_box_->addItem(scale_type_.first);
+	}
 
-	scale_layout->addWidget(this->y_label_);
-	scale_layout->addWidget(this->y_box_);
 	scale_layout->addWidget(this->x_label_);
 	scale_layout->addWidget(this->x_box_);
+	scale_layout->addWidget(this->y_label_);
+	scale_layout->addWidget(this->y_box_);
+	
 
 	widget_layout->addLayout(scale_layout);    
 
@@ -62,21 +83,47 @@ void PlotWidget::removeGraph(int number)
 
 void PlotWidget::clear()
 {
-	//this->plot_->clearGraphs();
-	/*for(auto number : this->graph_numbers_.keys())
-	{
-		this->removeGraph(number);
-	}
-	*/
-	/*this->plot_->addGraph();
-	graph_numbers_[0] = 0;
-	this->plot_->graph(0)->rescaleAxes(true);
-	//this->plot_->graph(0)->clear();*/
 	this->plot_->clearGraphs();
 	this->graph_numbers_.clear();
-	//this->plot_->clearItems();
-	//this->plot_->clearPlottables();
+	this->plot_->replot();
+}
+
+void PlotWidget::rescaleAxis(int scale_type, bool x_axis)
+{
+	static QSharedPointer<QCPAxisTickerLog> log_ticker(new QCPAxisTickerLog);
+	static QSharedPointer<QCPAxisTickerFixed> linear_ticker(new QCPAxisTickerFixed);
+	QCPAxis * axis;
+	if(x_axis)
+	{
+		axis = this->plot_->xAxis;
+	}
+	else
+	{
+		axis = this->plot_->yAxis;
+	}
+
+	axis->setScaleType(scale_types_[scale_type].second);
+
+	if(scale_types_[scale_type].second == QCPAxis::ScaleType::stLogarithmic)
+	{
+		axis->setTicker(log_ticker);
+	}
+	else
+	{
+		axis->setTicker(linear_ticker);
+	}
+	axis->setNumberFormat("eb");
+	axis->setNumberPrecision(0);
 
 	this->plot_->replot();
+}
 
+void PlotWidget::rescaleXAxis(int scale_type)
+{
+	this->rescaleAxis(scale_type, true);
+}
+
+void PlotWidget::rescaleYAxis(int scale_type)
+{
+	this->rescaleAxis(scale_type, false);
 }
