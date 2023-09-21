@@ -19,6 +19,7 @@ public slots:
     void updateData(const NMRDataStruct& raw_data);
 signals:
     void processingDone(const NMRDataStruct& processed_data);
+    void clearData();
 };
 
 #endif

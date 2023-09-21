@@ -57,10 +57,26 @@ void PlotWidget::removeGraph(int number)
 {
 	this->plot_->removeGraph(this->graph_numbers_[number]);
 	this->graph_numbers_.remove(number);
+	this->plot_->replot();
 }
 
 void PlotWidget::clear()
 {
+	//this->plot_->clearGraphs();
+	/*for(auto number : this->graph_numbers_.keys())
+	{
+		this->removeGraph(number);
+	}
+	*/
+	/*this->plot_->addGraph();
+	graph_numbers_[0] = 0;
+	this->plot_->graph(0)->rescaleAxes(true);
+	//this->plot_->graph(0)->clear();*/
 	this->plot_->clearGraphs();
 	this->graph_numbers_.clear();
+	//this->plot_->clearItems();
+	//this->plot_->clearPlottables();
+
+	this->plot_->replot();
+
 }
