@@ -3,6 +3,7 @@
 
 #include <QFileSystemModel>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QTreeView>
 #include <QLineEdit>
 #include <QPushButton>
@@ -26,11 +27,12 @@ private:
     QTreeView * filesystem_view_;
     QLineEdit * directory_edit_;
     QPushButton * directory_explorer_button_;
-    QPushButton * directory_select_button_;
 
     QFileDialog * directory_explorer_;
 
     QDir current_directory_;
+
+    void onPathSelected(const QString& path);
 
 signals:
     void fileSelected(const QString&);
