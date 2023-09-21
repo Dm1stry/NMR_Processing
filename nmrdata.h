@@ -37,6 +37,8 @@ signals:
     void wrongData();
     void rawDataUpdated(const NMRDataStruct&);
     void processedDataUpdated(const NMRDataStruct&);
+    void rawDataCleared();
+    void processedDataCleared();
 };
 
 #endif
