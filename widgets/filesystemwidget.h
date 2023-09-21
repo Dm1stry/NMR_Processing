@@ -3,6 +3,7 @@
 
 #include <QFileSystemModel>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QTreeView>
 #include <QLineEdit>
 #include <QPushButton>
@@ -31,6 +32,8 @@ private:
     QFileDialog * directory_explorer_;
 
     QDir current_directory_;
+
+    void onPathSelected(const QString& path);
 
 signals:
     void fileSelected(const QString&);

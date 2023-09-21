@@ -28,7 +28,7 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
 
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 
-    this->directory_explorer_->setFileMode(QFileDialog::Directory);
+    this->directory_explorer_->setFileMode(QFileDialog::ExistingFile);
     this->changeDirectory(QDir::rootPath());
 
     //Change dir on select button click
@@ -37,15 +37,8 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
     connect(this->directory_explorer_button_, &QPushButton::clicked, this, &FileSystemWidget::openDirectoryExplorer);
     //If directory selected - change dir to it, if file - emit signal, that file selected
     connect(this->filesystem_view_, &QTreeView::doubleClicked, [=](){
-        if(this->filesystem_model_->isDir(this->filesystem_view_->currentIndex()))
-        {
-            this->changeDirectory(this->filesystem_model_->filePath(this->filesystem_view_->currentIndex()));
-        }
-        else
-        {
-            emit fileSelected(this->filesystem_model_->filePath(this->filesystem_view_->currentIndex()));
-        }
-        });
+        this->onPathSelected(this->filesystem_model_->filePath(this->filesystem_view_->currentIndex()));
+    });
 
     connect(this->directory_edit_, &QLineEdit::returnPressed, [=](){this->changeDirectory(this->directory_edit_->text());});
 }
@@ -65,5 +58,21 @@ void FileSystemWidget::openDirectoryExplorer()
 {
     this->directory_explorer_->setDirectory(current_directory_);
     if(this->directory_explorer_->exec())
-        directory_edit_->setText(directory_explorer_->selectedFiles()[0]);
+    {
+        this->onPathSelected(directory_explorer_->selectedFiles()[0]);
+    }
+}
+
+void FileSystemWidget::onPathSelected(const QString& path)
+{
+    QFileInfo info(path);
+    if(info.isDir())
+    {
+        this->changeDirectory(path);
+    }
+    else
+    {
+        this->changeDirectory(info.absoluteDir().absolutePath());
+        emit fileSelected(path);
+    }
 }
