@@ -27,7 +27,6 @@ private:
     QTreeView * filesystem_view_;
     QLineEdit * directory_edit_;
     QPushButton * directory_explorer_button_;
-    QPushButton * directory_select_button_;
 
     QFileDialog * directory_explorer_;
 
