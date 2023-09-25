@@ -2,6 +2,7 @@
 #define TIKHONOVPROCESSWIDGET_H
 
 #include <QVBoxLayout>
+#include <QThread>
 
 #include "baseprocesswidget.h"
 #include "tikhonovprocessor.h"
@@ -11,6 +12,8 @@ class TikhonovProcessWidget : public BaseProcessWidget
 Q_OBJECT
 public:
     TikhonovProcessWidget(QWidget * parent = nullptr);
+private:
+    QThread * thread_;
 };
 
 #endif
