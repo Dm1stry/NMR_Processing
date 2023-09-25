@@ -1,8 +1,7 @@
 #include "tikhonovprocesswidget.h"
 
 TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
-  : BaseProcessWidget("Тихонов", parent),
-    thread_(new QThread(this))
+  : BaseProcessWidget("Тихонов", parent)
 {
     BaseProcessor * processor = new TikhonovProcessor();
 	this->setProcessorInSeparateThread(processor);
@@ -21,9 +20,6 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
     widget_layout->addLayout(buttons_layout);
 
     this->setLayout(widget_layout);
-
-    processor->moveToThread(this->thread_);
-    this->thread_->start();
 	//BaseProcessor * processor = getProcessor();
     //connect(this->process_button_, SIGNAL(clicked()), (TikhonovProcessor *)this->processor_, SLOT(Process()));
     //connect(this->processor_, SIGNAL(processingStateUpdate(const uchar&)), this->progress_bar_, SLOT(setValue(int)));

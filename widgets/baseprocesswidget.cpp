@@ -61,7 +61,7 @@ void BaseProcessWidget::setProcessorInSeparateThread(BaseProcessor * processor)
     this->thread_ = new QThread(this);
     this->processor_->moveToThread(this->thread_);
     connect(this->process_button_, SIGNAL(clicked()), this->processor_, SLOT(Process()), Qt::QueuedConnection);
-    connect(this->processor_, SIGNAL(processingStateUpdate(const uchar&)), this->progress_bar_, SLOT(setValue(int)), Qt::QueuedConnection);
+    connect(this->processor_, SIGNAL(processingStateUpdate(const int&)), this->progress_bar_, SLOT(setValue(int)), Qt::QueuedConnection);
     this->thread_->start(QThread::TimeCriticalPriority);
 }
 

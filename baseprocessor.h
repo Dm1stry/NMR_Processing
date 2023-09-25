@@ -21,7 +21,7 @@ public slots:
     void clearData();
 signals:
     void processingStarted();
-    void processingStateUpdate(const uchar&);  // Processing state in percentages
+    void processingStateUpdate(const int&);  // Processing state in percentages
     void processingDone(const NMRDataStruct&);
 };
 

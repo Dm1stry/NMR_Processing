@@ -1,4 +1,5 @@
 #include "tikhonovprocessor.h"
+#include <Eigen/Dense>
 
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
   : BaseProcessor(parent)
@@ -10,6 +11,10 @@ TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
 	T_min_ = 100;
 	T_max_ = 1e7;
 	p_size_ = 1000;
+
+	
+	//Eigen::setNbThreads(10);
+	//Eigen::initParallel();
 }
 
 void TikhonovProcessor::Process()
@@ -73,7 +78,7 @@ void TikhonovProcessor::Process()
 			current_update_iteration += step_to_update;
 			emit processingStateUpdate(current_state += 10);
 		}
-		QCoreApplication::processEvents();
+		//QCoreApplication::processEvents();
 	}
 
 	//--------------------------------------------------
@@ -96,7 +101,8 @@ void TikhonovProcessor::Process()
 		.pt = this->pt_
 	};
 
-	emit processingDone(this->convert_spectrum(processed_data));
+	emit processingDone(processed_data);
+	//emit processingDone(this->convert_spectrum(processed_data));
 	emit processingStateUpdate(0);
 
 }  //void TikhonovProcessor::Process()

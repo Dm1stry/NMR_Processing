@@ -39,6 +39,7 @@ signals:
     void processedDataUpdated(const NMRDataStruct&);
     void rawDataCleared();
     void processedDataCleared();
+    //void clearData();
 };
 
 #endif

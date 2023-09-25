@@ -12,8 +12,6 @@ class TikhonovProcessWidget : public BaseProcessWidget
 Q_OBJECT
 public:
     TikhonovProcessWidget(QWidget * parent = nullptr);
-private:
-    QThread * thread_;
 };
 
 #endif
