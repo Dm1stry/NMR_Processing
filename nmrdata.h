@@ -34,11 +34,11 @@ public slots:
     void clearData();
     
 signals:
-    void wrongData();
-    void rawDataUpdated(const NMRDataStruct&);
-    void processedDataUpdated(const NMRDataStruct&);
-    void rawDataCleared();
-    void processedDataCleared();
+    Q_SIGNAL void wrongData();
+    Q_SIGNAL void rawDataUpdated(const NMRDataStruct&);
+    Q_SIGNAL void processedDataUpdated(const NMRDataStruct&);
+    Q_SIGNAL void rawDataCleared();
+    Q_SIGNAL void processedDataCleared();
     //void clearData();
 };
 

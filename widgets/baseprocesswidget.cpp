@@ -79,7 +79,7 @@ void BaseProcessWidget::addParameter(const QString& name, const QString& label, 
     this->parameters_layout_->addWidget(parameter_label, parameters_amount_, 0);
     this->parameters_layout_->addWidget(parameter_edit, parameters_amount_++, 1);
     parameter_edit->setText(QString::number(default_value.toDouble()));
-    connect(parameter_edit, SIGNAL(textChanged(const QString &text)), this->processor_, SLOT(
+    connect(parameter_edit, &QLineEdit::textChanged,
         [=](){
             QVariant value;
             bool convertable;
@@ -87,7 +87,7 @@ void BaseProcessWidget::addParameter(const QString& name, const QString& label, 
             if(convertable)
                 this->processor_->updateParameter(name, value);
         }
-    ));
+    );
 }
 
 QGridLayout * BaseProcessWidget::getButtonsLayout() const
