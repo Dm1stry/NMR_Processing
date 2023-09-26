@@ -22,6 +22,7 @@ void TikhonovProcessor::Process()
 	using namespace Eigen;
 	
 	emit processingStarted();
+	emit processingStateUpdate(1);
   //--------Creating of a logspace---------------
     p_.reserve(this->p_size_ + 1);
     double p_min = -log10(this->T_max_);
@@ -58,6 +59,8 @@ void TikhonovProcessor::Process()
 	MatrixXd W_alpha = W * this->alpha_;
 
 	VectorXd r = VectorXd::Zero(this->p_size_);
+
+	emit processingStateUpdate(5);
 
 	const uint step_to_update = iterations_ / 10;
 	uint current_update_iteration = step_to_update;
