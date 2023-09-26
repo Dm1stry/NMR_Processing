@@ -1,6 +1,7 @@
 #ifndef NMRDATASTRUCT_H
 #define NMRDATASTRUCT_H
 #include <QVector>
+#include <QMetaType>
 
 struct NMRDataStruct
 {
@@ -9,5 +10,7 @@ struct NMRDataStruct
     QVector<double> p;
     QVector<double> pt;
 };
+
+Q_DECLARE_METATYPE(NMRDataStruct);
 
 #endif

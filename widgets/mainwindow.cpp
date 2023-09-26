@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget * parent)
     spectrum_widget_(new PlotWidget),
     process_widget_(new ProcessWidget)
 {
+    qRegisterMetaType<NMRDataStruct>("NMRDataStruct");
+    qRegisterMetaType<NMRDataStruct>("NMRDataStruct&");
     layoutSetup();
     connections();
 }

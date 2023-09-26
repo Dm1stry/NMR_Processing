@@ -1,9 +1,10 @@
-#ifndef MAINWINDOW_HPP
-#define MAINWINDOW_HPP
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QMetaType>
 
 
 #include "filesystemwidget.h"
@@ -11,6 +12,7 @@
 #include "logwidget.h"
 #include "plotwidget.h"
 #include "nmrdata.h"
+#include "nmrdatastruct.h"
 
 class MainWindow : public QWidget
 {
