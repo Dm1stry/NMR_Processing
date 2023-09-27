@@ -8,8 +8,9 @@
 #include <QString>
 
 #include "nmrdatastruct.h"
+#include "iloggable.h"
 
-class BaseProcessor : public QObject
+class BaseProcessor : public QObject, public ILoggable
 {
 Q_OBJECT
 public:

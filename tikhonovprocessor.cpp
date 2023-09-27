@@ -46,15 +46,21 @@ void TikhonovProcessor::Process()
 		}
 	}
 
+	emit processingStateUpdate(2);
+
 	MatrixXd K_t = K.transpose();
 
 	MatrixXd W = (K_t * K + MatrixXd::Identity(this->p_size_, this->p_size_) * this->alpha_).inverse();
+
+	emit processingStateUpdate(3);
 
 	QVector<double> s_arr = A_;
 
 	Map<VectorXd> s(s_arr.data(), s_arr.size());
 
 	MatrixXd W_K_t_s = W * (K_t * s);
+
+	emit processingStateUpdate(4);
 
 	MatrixXd W_alpha = W * this->alpha_;
 
