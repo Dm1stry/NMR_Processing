@@ -50,7 +50,7 @@ set(PROJECT_SOURCES
         ${WIDGET_DIRECTORY}/logwidget.h             ${WIDGET_DIRECTORY}/logwidget.cpp
 
         baseprocessor.h         baseprocessor.cpp
-        tikhonovprocessor.h     tikhonovprocessor.cpp
+        tikhonovprocessor.h     gsl_tikhonovprocessor.cpp
 
         mathfunctions.h         mathfunctions.cpp
 

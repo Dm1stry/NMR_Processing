@@ -1,8 +1,8 @@
-#include "tikhonovprocessor.h"
+/*#include "tikhonovprocessor.h"
 #include <Eigen/Dense>
 
-TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
-  : BaseProcessor(parent)
+TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*//*)*/
+/*  : BaseProcessor(parent)
 {
     //temoporary set up
 
@@ -173,3 +173,4 @@ void TikhonovProcessor::updateData(const NMRDataStruct& raw_data)
   this->t_ = raw_data.t;
   this->A_ = raw_data.A;
 }
+*/
