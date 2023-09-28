@@ -16,10 +16,11 @@ Cmake можно скачать [отсюда](https://cmake.org/download/)
 ## Qt 
 Я использовал пиратский установщик (потому что официальный в россии не работает), вроде бы [вот здесь](https://cybersoft.ru/razrabotka/redaktory/208-qt.html) можно скачать
 
-## Eigen
+## GSL + OpenBLAS
 Устанавливался через vcpkg
 ```
-vcpkg install eigen3[core]:x64-windows
+vcpkg install gsl:x64-windows
+vcpkg install openblas[threads]:x64-windows
 ```
 После установки нужно сделать integrate install, чтобы vcpkg скопировал заголовки и файлы библиотеки куда нужно, а также прописал себе в vcpkg.cmake нужную конфигурацию
 
