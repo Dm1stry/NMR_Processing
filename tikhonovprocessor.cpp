@@ -53,7 +53,10 @@ void TikhonovProcessor::Process()
 	emit processingStarted();
 	emit processingStateUpdate(1);
   //--------Creating of a logspace---------------
-    p_.reserve(this->p_size_ + 1);
+	p_.clear();
+	int capacity_needed = this->p_size_ + 1 - p_.capacity();
+	if(capacity_needed > 0)
+    	p_.reserve(capacity_needed);
     double p_min = -log10(this->T_max_);
     double p_max = -log10(this->T_min_);
     double p_step = (p_max - p_min) / (this->p_size_ - 1);
