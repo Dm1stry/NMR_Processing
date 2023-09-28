@@ -4,7 +4,7 @@ Qt Program for processing NMR relaxometer data
 Для сборки проекта нужны:
 * cmake старше 3.5
 * Qt использовался 5.14
-* Eigen3 (для матричных операций) устанавалась последняя версия из vcpkg
+* GSL + OpenBLAS (для матричных операций) устанавалась последняя версия из vcpkg
 * Для подключения Eigen, нужно в CMakeLists.txt заменить путь до vcpkg.cmake, в 11 строкe
 * Также у меня оно не завелось из под g++, но хорошо работает с Visual Studio Community 2022
 
