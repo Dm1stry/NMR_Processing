@@ -146,6 +146,11 @@ void TikhonovProcessor::Process()
 		pt_.push_back(1/p);
 	}
 	p_ = QVector<double>(r->data, r->data + r->size);
+	p_max = *std::max_element(p_.begin(), p_.end());
+	for(auto& p_i : p_)
+	{
+		p_i = p_i / p_max;
+	}
 
 	NMRDataStruct processed_data {
 		.A = this->A_appr_,
