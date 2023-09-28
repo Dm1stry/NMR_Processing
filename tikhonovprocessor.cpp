@@ -1,4 +1,8 @@
 #include "tikhonovprocessor.h"
+#include <sys/types.h>
+#include <stdio.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_linalg.h>
 
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
   : BaseProcessor(parent)
@@ -6,17 +10,48 @@ TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
     //temoporary set up
 
 	alpha_ = 200;
-	iterations_ = 100;
+	iterations_ = 1000;
 	T_min_ = 100;
-	T_max_ = 1e7;
+	T_max_ = 1e8;
 	p_size_ = 1000;
+
+
+}
+
+void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
+{
+	if(parameter_name == "Alpha")
+	{
+	this->alpha_ = parameter_value.toDouble();
+	}
+	else if(parameter_name == "Iterations")
+	{
+	this->iterations_ = parameter_value.toUInt();
+	}
+	else if(parameter_name == "T_min")
+	{
+	this->T_min_ = parameter_value.toDouble();
+	}
+	else if(parameter_name == "T_max")
+	{
+	this->T_max_ = parameter_value.toDouble();
+	}
+	else if(parameter_name == "p_size")
+	{
+	this->p_size_ = parameter_value.toUInt();
+	}
+}
+
+void TikhonovProcessor::updateData(const NMRDataStruct& raw_data)
+{
+	this->t_ = raw_data.t;
+	this->A_ = raw_data.A;
 }
 
 void TikhonovProcessor::Process()
 {
-	using namespace Eigen;
-	
 	emit processingStarted();
+	emit processingStateUpdate(1);
   //--------Creating of a logspace---------------
     p_.reserve(this->p_size_ + 1);
     double p_min = -log10(this->T_max_);
@@ -28,40 +63,67 @@ void TikhonovProcessor::Process()
     	p_min += p_step;
     }
   //---------------------------------------------
-
-  //-------------- Regularization ---------------
 	uint t_size = this->t_.size();
-	MatrixXd K(p_size_, t_size);
+	gsl_matrix * K = gsl_matrix_alloc(t_size, p_size_);
+	/*
 	for(uint p_index = 0; p_index < p_size_; ++p_index)
 	{
 		for(uint t_index = 0; t_index < t_size; ++t_index)
 		{
-			K(p_index, t_index) = exp(-p_[p_index] * t_[t_index]);
+			K->data[p_index * K->tda + t_index] = exp(-p_[p_index] * t_[t_index]);
+		}
+	}*/
+
+	for(uint t_index = 0; t_index < t_size; ++t_index)
+	{
+		for(uint p_index = 0; p_index < p_size_; ++p_index)
+		{
+			K->data[t_index * K->tda + p_index] = exp(-p_[p_index] * t_[t_index]);
 		}
 	}
 
-	MatrixXd K_t = K.transpose();
+	emit processingStateUpdate(2);
+	gsl_vector * s = gsl_vector_alloc(t_size);
+	auto s_ptr = s->data;
+	for(auto A_it = A_.begin(); A_it < A_.end(); A_it++, ++s_ptr)
+	{
+		*s_ptr = *A_it;
+	}
+	
+	//W = (K_t * K + E{p_size_, p_size_} * alpha_)^(-1)
+	gsl_matrix * W = gsl_matrix_alloc(p_size_, p_size_);
+	gsl_matrix_set_identity(W);
+	int status = gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1, K, K, this->alpha_, W);
 
-	MatrixXd W = (K_t * K + MatrixXd::Identity(this->p_size_, this->p_size_) * this->alpha_).inverse();
+	gsl_permutation * p = gsl_permutation_alloc(p_size_);
+    int signum = 1;
 
-	QVector<double> s_arr = A_;
+	gsl_linalg_LU_decomp(W, p, &signum); // - нужно инвертировать W
+	gsl_linalg_LU_invert(W, p, W);
 
-	Map<VectorXd> s(s_arr.data(), s_arr.size());
+	emit processingStateUpdate(4);
 
-	MatrixXd W_K_t_s = W * (K_t * s);
+	//W_K_t_s = W * (K_t * s)
+	gsl_vector * K_t_s = gsl_vector_alloc(p_size_);
+	status = gsl_blas_dgemv(CblasTrans, 1, K, s, 0, K_t_s);
 
-	MatrixXd W_alpha = W * this->alpha_;
+	gsl_vector * W_K_t_s = gsl_vector_alloc(p_size_);
+	status = gsl_blas_dgemv(CblasNoTrans, 1, W, K_t_s, 0, W_K_t_s);
 
-	VectorXd r = VectorXd::Zero(this->p_size_);
+	gsl_vector * r = gsl_vector_calloc(p_size_);
 
+	emit processingStateUpdate(5);
+	
 	const uint step_to_update = iterations_ / 10;
 	uint current_update_iteration = step_to_update;
 	uint current_state = 0;
 
 	for(size_t iteration = 0; iteration < this->iterations_; ++iteration)
 	{
-		r = W_K_t_s + W_alpha * r;
-		for(auto r_iterator = r.begin(); r_iterator < r.end(); ++r_iterator)
+		//r = W_K_t_s + W_alpha * r;
+		gsl_blas_dgemv(CblasNoTrans, this->alpha_, W, r, 0, r);
+		gsl_blas_daxpy(1, W_K_t_s, r);
+		for(auto r_iterator = r->data; r_iterator < r->data + r->size; ++r_iterator)
 		{
 			if(*r_iterator < 0)
 			{
@@ -73,21 +135,22 @@ void TikhonovProcessor::Process()
 			current_update_iteration += step_to_update;
 			emit processingStateUpdate(current_state += 10);
 		}
-		QCoreApplication::processEvents();
 	}
 
-	//--------------------------------------------------
-
-	//--------------- Saving results -------------------
-
-	VectorXd A = K * r;
-	A_appr_ = QVector<double>(A.begin(), A.end());
+	gsl_vector * A = gsl_vector_alloc(t_size);
+	gsl_blas_dgemv(CblasNoTrans, 1, K, r, 0, A);
+	A_appr_ = QVector<double>(A->data, A->data + A->size);
 	pt_.reserve(p_size_ + 1);
 	for(auto p : p_)
 	{
 		pt_.push_back(1/p);
 	}
-	p_ = QVector<double>(r.begin(), r.end());
+	p_ = QVector<double>(r->data, r->data + r->size);
+	p_max = *std::max_element(p_.begin(), p_.end());
+	for(auto& p_i : p_)
+	{
+		p_i = p_i / p_max;
+	}
 
 	NMRDataStruct processed_data {
 		.A = this->A_appr_,
@@ -96,65 +159,12 @@ void TikhonovProcessor::Process()
 		.pt = this->pt_
 	};
 
+	//emit processingDone(processed_data);
 	emit processingDone(this->convert_spectrum(processed_data));
 	emit processingStateUpdate(0);
-
 }  //void TikhonovProcessor::Process()
 
 NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)
 {
-	//----------- Get curve local maximums and minimums ----
-	QVector<int> max_indexes;
-	QVector<int> min_indexes;
-	max_indexes.reserve(10);
-	min_indexes.reserve(20);
-	for(int i = 1; i < processed_data.p.size(); ++i)
-	{
-		if(processed_data.p[i - 1] < processed_data.p[i] && processed_data.p[i] > processed_data.p[i + 1])
-		{
-			max_indexes.push_back(i);
-		}
-		if((processed_data.p[i - 1] >= processed_data.p[i] && processed_data.p[i] < processed_data.p[i + 1]) || (processed_data.p[i - 1] > processed_data.p[i] && processed_data.p[i] <= processed_data.p[i + 1]))
-		{
-			min_indexes.push_back(i);
-		}
-	}
-	//-----------------------------------------
-
-	//---------- Get squares under peaks (components) ------
-	//-----------------------------------------
-
-	//---------- Change spectrum appearance ---
-	//-----------------------------------------
-	return processed_data;
-}
-
-void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
-{
-  if(parameter_name == "Alpha")
-  {
-    this->alpha_ = parameter_value.toDouble();
-  }
-  else if(parameter_name == "Iterations")
-  {
-    this->iterations_ = parameter_value.toUInt();
-  }
-  else if(parameter_name == "T_min")
-  {
-    this->T_min_ = parameter_value.toDouble();
-  }
-  else if(parameter_name == "T_max")
-  {
-    this->T_max_ = parameter_value.toDouble();
-  }
-  else if(parameter_name == "p_size")
-  {
-    this->p_size_ = parameter_value.toUInt();
-  }
-}
-
-void TikhonovProcessor::updateData(const NMRDataStruct& raw_data)
-{
-  this->t_ = raw_data.t;
-  this->A_ = raw_data.A;
+    return processed_data;
 }

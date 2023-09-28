@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget * parent)
     spectrum_widget_(new PlotWidget),
     process_widget_(new ProcessWidget)
 {
+    qRegisterMetaType<NMRDataStruct>("NMRDataStruct");
+    qRegisterMetaType<NMRDataStruct>("NMRDataStruct&");
     layoutSetup();
     connections();
 }
@@ -22,12 +24,12 @@ inline void MainWindow::connections()
 
     connect(this->process_widget_, &ProcessWidget::processingDone, this->data_, &NMRData::setProcessedData);
 
-    connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->plot_widget_, SLOT(updateAsPlot(const NMRDataStruct&, 1)));
+    connect(this->data_, &NMRData::processedDataUpdated, [=](const NMRDataStruct& nmrdata){this->plot_widget_->updateAsPlot(nmrdata, 1);});
     connect(this->data_, SIGNAL(processedDataUpdated(const NMRDataStruct&)), this->spectrum_widget_, SLOT(updateAsSpectrum(const NMRDataStruct&)));
 
     connect(this->process_widget_, SIGNAL(clearData()), this->data_, SLOT(clearData()));
-    connect(this->data_, SIGNAL(clearData()), this->plot_widget_, SLOT(clear()));
-    connect(this->data_, SIGNAL(clearData()), this->spectrum_widget_, SLOT(clear()));
+    connect(this->data_, SIGNAL(rawDataCleared()), this->plot_widget_, SLOT(clear()));
+    connect(this->data_, SIGNAL(rawDataCleared()), this->spectrum_widget_, SLOT(clear()));
 
     //connect(this->data_, SIGNAL())
 	//connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->process_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));

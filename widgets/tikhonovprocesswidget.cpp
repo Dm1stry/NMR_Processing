@@ -3,7 +3,8 @@
 TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
   : BaseProcessWidget("Тихонов", parent)
 {
-	this->setProcessor(new TikhonovProcessor(this));
+    BaseProcessor * processor = new TikhonovProcessor();
+	this->setProcessorInSeparateThread(processor);
 
 	this->addParameter("T2min", "T<sub>2, min</sub>", 1e2);
 	this->addParameter("T2max", "T<sub>2, max</sub>", 1e7);
@@ -19,9 +20,8 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
     widget_layout->addLayout(buttons_layout);
 
     this->setLayout(widget_layout);
-
 	//BaseProcessor * processor = getProcessor();
     //connect(this->process_button_, SIGNAL(clicked()), (TikhonovProcessor *)this->processor_, SLOT(Process()));
     //connect(this->processor_, SIGNAL(processingStateUpdate(const uchar&)), this->progress_bar_, SLOT(setValue(int)));
-	
+	//disconnect(this->process_button_, SIGNAL(clicked()), this->processor_, SLOT(Process()))
 }

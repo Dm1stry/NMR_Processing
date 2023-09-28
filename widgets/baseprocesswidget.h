@@ -9,6 +9,7 @@
 #include <QGridLayout>
 #include <QProgressBar>
 #include <QVariant>
+#include <QThread>
 
 #include "baseprocessor.h"
 #include "nmrdatastruct.h"
@@ -18,10 +19,12 @@ class BaseProcessWidget : public QWidget
 Q_OBJECT
 public:
     BaseProcessWidget(const QString& name, QWidget * parent = nullptr);
+    virtual ~BaseProcessWidget();
     const QString& getName() const;
     BaseProcessor * getProcessor() const;
 protected:
     void setProcessor(BaseProcessor * processor);
+    void setProcessorInSeparateThread(BaseProcessor * processor);
     void addParameter(const QString& name, const QString& label, QVariant default_value, QValidator * validator = nullptr);
     QGridLayout * getButtonsLayout() const;
     QGridLayout * getParametersLayout() const;
@@ -44,6 +47,8 @@ private:
     //---------------------------------------------------------------------------
 
     BaseProcessor * processor_;  // Pointer to processor object
+    QThread * thread_;
+
 private slots:
     void clearParams();
 public slots:

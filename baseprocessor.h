@@ -8,8 +8,9 @@
 #include <QString>
 
 #include "nmrdatastruct.h"
+#include "iloggable.h"
 
-class BaseProcessor : public QObject
+class BaseProcessor : public QObject //, public ILoggable
 {
 Q_OBJECT
 public:
@@ -20,9 +21,9 @@ public slots:
     virtual void updateData(const NMRDataStruct& raw_data) = 0;
     void clearData();
 signals:
-    void processingStarted();
-    void processingStateUpdate(const uchar&);  // Processing state in percentages
-    void processingDone(const NMRDataStruct&);
+    Q_SIGNAL void processingStarted();
+    Q_SIGNAL void processingStateUpdate(const int&);  // Processing state in percentages
+    Q_SIGNAL void processingDone(const NMRDataStruct&);
 };
 
 #endif

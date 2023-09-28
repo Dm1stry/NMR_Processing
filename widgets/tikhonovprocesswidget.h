@@ -2,6 +2,7 @@
 #define TIKHONOVPROCESSWIDGET_H
 
 #include <QVBoxLayout>
+#include <QThread>
 
 #include "baseprocesswidget.h"
 #include "tikhonovprocessor.h"

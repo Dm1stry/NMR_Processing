@@ -18,8 +18,8 @@ private:
 public slots:
     void updateData(const NMRDataStruct& raw_data);
 signals:
-    void processingDone(const NMRDataStruct& processed_data);
-    void clearData();
+    Q_SIGNAL void processingDone(const NMRDataStruct& processed_data);
+    Q_SIGNAL void clearData();
 };
 
 #endif
