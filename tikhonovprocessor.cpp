@@ -162,6 +162,21 @@ void TikhonovProcessor::Process()
 	//emit processingDone(processed_data);
 	emit processingDone(this->convert_spectrum(processed_data));
 	emit processingStateUpdate(0);
+
+	gsl_matrix_free(K);
+	gsl_matrix_free(W);
+	gsl_vector_free(s);
+	gsl_vector_free(K_t_s);
+	gsl_vector_free(W_K_t_s);
+	gsl_vector_free(r);
+	gsl_vector_free(A);
+	K = nullptr;
+	W = nullptr;
+	s = nullptr;
+	K_t_s = nullptr;
+	W_K_t_s = nullptr;
+	r = nullptr;
+	A = nullptr;
 }  //void TikhonovProcessor::Process()
 
 NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)
