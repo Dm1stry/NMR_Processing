@@ -82,6 +82,8 @@ void NMRData::setComponents(const NMRDataStruct& components)
 {
     M_ = components.A;
     T_ = components.t;
+
+    emit componentsUpdated(components);
 }
 
 void NMRData::clearRawData()
@@ -112,8 +114,22 @@ void NMRData::clearProcessedData()
     emit processedDataUpdated(processed_data);
 }
 
+void NMRData::clearComponents()
+{
+    this->M_.clear();
+    this->T_.clear();
+
+     NMRDataStruct components = {
+        .A = this->M_,
+        .t = this->T_
+    };
+
+    emit componentsUpdated(components);
+}
+
 void NMRData::clearData()
 {
     this->clearRawData();
     this->clearProcessedData();
+    this->clearComponents();
 }

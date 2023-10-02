@@ -42,6 +42,7 @@ signals:
     Q_SIGNAL void wrongData();
     Q_SIGNAL void rawDataUpdated(const NMRDataStruct&);
     Q_SIGNAL void processedDataUpdated(const NMRDataStruct&);
+    Q_SIGNAL void componentsUpdated(const NMRDataStruct&);
     Q_SIGNAL void rawDataCleared();
     Q_SIGNAL void processedDataCleared();
     Q_SIGNAL void printLog(const QString&);
