@@ -164,6 +164,7 @@ void TikhonovProcessor::Process()
 
 	//emit processingDone(processed_data);
 	emit processingDone(this->convert_spectrum(processed_data));
+	this->getComponents(processed_data);
 	emit processingStateUpdate(0);
 
 	gsl_matrix_free(K);
@@ -181,6 +182,58 @@ void TikhonovProcessor::Process()
 	r = nullptr;
 	A = nullptr;
 }  //void TikhonovProcessor::Process()
+
+void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
+{
+	double full_S = abs(trapz_intergal(pt_.begin(), pt_.end(), p_.begin(), p_.end()));
+	std::vector<size_t> peaks = argmax(p_.begin(), p_.end());
+	QVector<double> M;
+	QVector<double> T;
+	for(auto peak : peaks)
+	{
+		double peak_S = find_peak_S(peak);
+		if(peak_S > 0.005)
+		{
+			M.push_back(peak_S / full_S);
+			T.push_back(this->pt_[peak]);
+		}
+	}
+
+	NMRDataStruct components{
+		.A = M,
+		.t = T
+	};
+
+	emit componentsFound(components);
+}
+
+inline double TikhonovProcessor::find_peak_S(const size_t& peak_index)
+{
+	unsigned int current_index_up = peak_index;
+	unsigned int current_index_down = peak_index;
+	while(this->p_[current_index_up] != 0)
+	{
+		if(current_index_up == this->p_.size() - 1)
+		{
+			break;
+		}
+		++current_index_up;
+	}
+	while(this->p_[current_index_down] != 0)
+	{
+		if(current_index_down == 0)
+		{
+			break;
+		}
+		--current_index_down;
+	}
+	return abs(trapz_intergal(
+		this->pt_.begin() + current_index_down, 
+		this->pt_.end() - current_index_up,
+		this->p_.begin() + current_index_down, 
+		this->p_.end() - current_index_up
+	));
+}
 
 NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)
 {
