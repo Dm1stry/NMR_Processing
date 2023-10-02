@@ -23,6 +23,7 @@ signals:
     Q_SIGNAL void processingStarted();
     Q_SIGNAL void processingStateUpdate(const int&);  // Processing state in percentages
     Q_SIGNAL void processingDone(const NMRDataStruct&);
+    Q_SIGNAL void componentsFound(const NMRDataStruct&);
 };
 
 #endif

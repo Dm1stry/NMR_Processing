@@ -31,6 +31,9 @@ inline void MainWindow::connections()
     connect(this->data_, SIGNAL(rawDataCleared()), this->plot_widget_, SLOT(clear()));
     connect(this->data_, SIGNAL(rawDataCleared()), this->spectrum_widget_, SLOT(clear()));
 
+    connect(this->process_widget_, SIGNAL(componentsFound(const NMRDataStruct&)), this->data_, SLOT(setComponents(const NMRDataStruct&)));
+    connect(this->data_, SIGNAL(componentsUpdated(const NMRDataStruct&)), this->log_widget_, SLOT(printComponents(const NMRDataStruct&)));
+
     //connect(this->data_, SIGNAL())
 	//connect(this->data_, SIGNAL(dataUpdated(const QVector<double>&, const QVector<double>&)), this->process_widget_, SLOT(updateData(const QVector<double>&, const QVector<double>&)));
 
