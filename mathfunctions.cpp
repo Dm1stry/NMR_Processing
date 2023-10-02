@@ -1,6 +1,6 @@
 #include "mathfunctions.h"
 
-inline double trapz_intergal(std::vector<double> x, std::vector<double> y)
+double trapz_intergal(std::vector<double> x, std::vector<double> y)
 {
     if(x.begin() == x.end() || x.size() != y.size())
     {
@@ -17,7 +17,7 @@ inline double trapz_intergal(std::vector<double> x, std::vector<double> y)
     return sum;
 }
 
-inline std::vector<double> logspace(double start, double stop, size_t number, double base, bool endpoint)
+std::vector<double> logspace(double start, double stop, size_t number, double base, bool endpoint)
 {
     std::vector<double> space;
     space.resize(number);
