@@ -78,6 +78,12 @@ void NMRData::setProcessedData(const NMRDataStruct& processed_data)
     emit processedDataUpdated(processed_data);
 }
 
+void NMRData::setComponents(const NMRDataStruct& components)
+{
+    M_ = components.A;
+    T_ = components.t;
+}
+
 void NMRData::clearRawData()
 {
     this->A_.clear();  //Однако память выделенная под вектор не освобождается, чтобы при считывании новых данных не выделять паямть заного.
