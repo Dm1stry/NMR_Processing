@@ -57,8 +57,6 @@ set(PROJECT_SOURCES
         nmrdata.h               nmrdata.cpp
         nmrdatastruct.h
 
-        iloggable.h
-
         ${INCLUDE_DIRECTORIES}/qcustomplot.cpp
         ${INCLUDE_DIRECTORIES}/qcustomplot.h
 )
