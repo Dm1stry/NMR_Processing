@@ -7,15 +7,11 @@
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
   : BaseProcessor(parent)
 {
-    //temoporary set up
-
 	alpha_ = 200;
 	iterations_ = 1000;
 	T_min_ = 100;
 	T_max_ = 1e8;
 	p_size_ = 1000;
-
-
 }
 
 void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
@@ -192,6 +188,8 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 	for(auto peak : peaks)
 	{
 		double peak_S = find_peak_S(peak);
+		//M.push_back(peak_S / full_S);
+		//T.push_back(this->pt_[peak]);
 		if(peak_S > 0.005)
 		{
 			M.push_back(peak_S / full_S);
