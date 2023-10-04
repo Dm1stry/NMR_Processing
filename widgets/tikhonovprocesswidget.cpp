@@ -6,8 +6,8 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
     BaseProcessor * processor = new TikhonovProcessor();
 	this->setProcessorInSeparateThread(processor);
 
-	this->addParameter("T2min", "T<sub>2, min</sub>", 1e2);
-	this->addParameter("T2max", "T<sub>2, max</sub>", 1e7);
+	this->addParameter("T2min", "T<sub>2, min</sub>", 100);
+	this->addParameter("T2max", "T<sub>2, max</sub>", 1e9);
 	this->addParameter("alpha", "Параметр регуляризации", 200);
 	this->addParameter("iterations", "Количество итераций", 100);
 	this->addParameter("p_size", "Дискретизация времени", 100);

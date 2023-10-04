@@ -4,14 +4,16 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
+#include <QDebug>
+
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
   : BaseProcessor(parent)
 {
 	alpha_ = 200;
-	iterations_ = 1000;
+	iterations_ = 100;
 	T_min_ = 100;
-	T_max_ = 1e8;
-	p_size_ = 1000;
+	T_max_ = 1e9;
+	p_size_ = 100;
 }
 
 void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
@@ -19,22 +21,27 @@ void TikhonovProcessor::updateParameter(QString parameter_name, QVariant paramet
 	if(parameter_name == "alpha")
 	{
 	this->alpha_ = parameter_value.toDouble();
+	qDebug() << "alpha: " << alpha_;
 	}
 	else if(parameter_name == "iterations")
 	{
 	this->iterations_ = parameter_value.toUInt();
+	qDebug() << "iterations: " << iterations_;
 	}
 	else if(parameter_name == "T2min")
 	{
 	this->T_min_ = parameter_value.toDouble();
+	qDebug() << "Tmin: " << T_min_;
 	}
 	else if(parameter_name == "T2max")
 	{
 	this->T_max_ = parameter_value.toDouble();
+	qDebug() << "Tmax: " << T_max_;
 	}
 	else if(parameter_name == "p_size")
 	{
 	this->p_size_ = parameter_value.toUInt();
+	qDebug() << "p: " << p_size_;
 	}
 }
 
