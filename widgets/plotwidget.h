@@ -7,9 +7,8 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "dependencies/QCustomPlot/qcustomplot.h"
-#include "subwidgets/customplotzoom.h"
 
+#include "subwidgets/customplotzoom.h"
 #include "nmrdatastruct.h"
 
 class PlotWidget : public QWidget
@@ -21,11 +20,12 @@ public:
 
 private:
     CustomPlotZoom * plot_;
-    //QCustomPlot * plot_;
     QLabel * x_label_;
     QLabel * y_label_;
     QComboBox * x_box_;
     QComboBox * y_box_;
+
+    QPushButton * home_button_;
 
     QMap<int, int> graph_numbers_;
     const QVector<QPair<QString, QCPAxis::ScaleType>> scale_types_;
@@ -44,6 +44,7 @@ private slots:
     void rescaleXAxis(int scale_type);
     void rescaleYAxis(int scale_type);
     void rescaleAxis(int scale_type, bool x_axis = true);
+    void homeView();
 };
 
 #endif
