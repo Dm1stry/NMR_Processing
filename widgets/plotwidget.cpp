@@ -2,14 +2,15 @@
 
 PlotWidget::PlotWidget(QWidget * parent /*= nullptr*/)
   : QWidget(parent),
-    plot_(new QCustomPlot),
+  	plot_(new CustomPlotZoom),
+    //plot_(new QCustomPlot),
     x_label_(new QLabel("X:")),
     x_box_(new QComboBox),
     y_label_(new QLabel("Y:")),
     y_box_(new QComboBox),
 	scale_types_({{"Линейно", QCPAxis::ScaleType::stLinear}, {"Логарифмически", QCPAxis::ScaleType::stLogarithmic}})
 {
-
+	this->plot_->setZoomMode(true);
 	this->plot_->addGraph();
 	graph_numbers_[0] = 0;
 	this->plot_->graph(0)->rescaleAxes(true);

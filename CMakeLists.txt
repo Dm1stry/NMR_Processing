@@ -41,13 +41,15 @@ include_directories(${GSL_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
         main.cpp
-        ${WIDGET_DIRECTORY}/mainwindow.h            ${WIDGET_DIRECTORY}/mainwindow.cpp
-        ${WIDGET_DIRECTORY}/plotwidget.h            ${WIDGET_DIRECTORY}/plotwidget.cpp
-        ${WIDGET_DIRECTORY}/processwidget.h         ${WIDGET_DIRECTORY}/processwidget.cpp
-        ${WIDGET_DIRECTORY}/baseprocesswidget.h     ${WIDGET_DIRECTORY}/baseprocesswidget.cpp
-        ${WIDGET_DIRECTORY}/tikhonovprocesswidget.h ${WIDGET_DIRECTORY}/tikhonovprocesswidget.cpp
-        ${WIDGET_DIRECTORY}/filesystemwidget.h      ${WIDGET_DIRECTORY}/filesystemwidget.cpp
-        ${WIDGET_DIRECTORY}/logwidget.h             ${WIDGET_DIRECTORY}/logwidget.cpp
+        ${WIDGET_DIRECTORY}/mainwindow.h                ${WIDGET_DIRECTORY}/mainwindow.cpp
+        ${WIDGET_DIRECTORY}/plotwidget.h                ${WIDGET_DIRECTORY}/plotwidget.cpp
+        ${WIDGET_DIRECTORY}/processwidget.h             ${WIDGET_DIRECTORY}/processwidget.cpp
+        ${WIDGET_DIRECTORY}/baseprocesswidget.h         ${WIDGET_DIRECTORY}/baseprocesswidget.cpp
+        ${WIDGET_DIRECTORY}/tikhonovprocesswidget.h     ${WIDGET_DIRECTORY}/tikhonovprocesswidget.cpp
+        ${WIDGET_DIRECTORY}/filesystemwidget.h          ${WIDGET_DIRECTORY}/filesystemwidget.cpp
+        ${WIDGET_DIRECTORY}/logwidget.h                 ${WIDGET_DIRECTORY}/logwidget.cpp
+
+        ${WIDGET_DIRECTORY}/subwidgets/customplotzoom.h ${WIDGET_DIRECTORY}/subwidgets/customplotzoom.cpp
 
         baseprocessor.h         baseprocessor.cpp
         tikhonovprocessor.h     tikhonovprocessor.cpp

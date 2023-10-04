@@ -8,6 +8,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "dependencies/QCustomPlot/qcustomplot.h"
+#include "subwidgets/customplotzoom.h"
 
 #include "nmrdatastruct.h"
 
@@ -19,7 +20,8 @@ public:
     PlotWidget(QWidget * parent = nullptr);
 
 private:
-    QCustomPlot * plot_;
+    CustomPlotZoom * plot_;
+    //QCustomPlot * plot_;
     QLabel * x_label_;
     QLabel * y_label_;
     QComboBox * x_box_;
