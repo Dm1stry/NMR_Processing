@@ -20,19 +20,19 @@ TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
 
 void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
 {
-	if(parameter_name == "Alpha")
+	if(parameter_name == "alpha")
 	{
 	this->alpha_ = parameter_value.toDouble();
 	}
-	else if(parameter_name == "Iterations")
+	else if(parameter_name == "iterations")
 	{
 	this->iterations_ = parameter_value.toUInt();
 	}
-	else if(parameter_name == "T_min")
+	else if(parameter_name == "T2min")
 	{
 	this->T_min_ = parameter_value.toDouble();
 	}
-	else if(parameter_name == "T_max")
+	else if(parameter_name == "T2max")
 	{
 	this->T_max_ = parameter_value.toDouble();
 	}
