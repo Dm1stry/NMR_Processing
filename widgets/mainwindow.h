@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QWidget>
+#include <QMainWindow>
+#include <QDockWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMetaType>
@@ -25,6 +27,7 @@ private:
     LogWidget * log_widget_;
     PlotWidget * plot_widget_;
     PlotWidget * spectrum_widget_;
+    PlotWidget * noise_widget_;
     ProcessWidget * process_widget_;
 
     inline void connections();

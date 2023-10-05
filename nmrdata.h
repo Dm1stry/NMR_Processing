@@ -28,11 +28,14 @@ private:
     QVector<double> M_;  //Component ratio
     QVector<double> T_;  //Component times
 
+    QVector<double> noise_;  //Difference between approximated by components and a raw signal
+
 public slots:
     void readAsCPMG(const QString& filepath);
     void setRawData(const NMRDataStruct& raw_data);
     void setProcessedData(const NMRDataStruct& processed_data);
-    void setComponents(const NMRDataStruct& processed_data);
+    void setComponents(const NMRDataStruct& components);
+    void setNoise(const NMRDataStruct& components);
     void clearRawData();
     void clearProcessedData();
     void clearComponents();

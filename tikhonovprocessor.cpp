@@ -209,6 +209,8 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 		.t = T
 	};
 
+	getNoise(components);
+
 	emit componentsFound(components);
 }
 
@@ -238,6 +240,28 @@ inline double TikhonovProcessor::find_peak_S(const size_t& peak_index)
 		this->p_.begin() + current_index_down, 
 		this->p_.end() - current_index_up
 	));
+}
+
+void TikhonovProcessor::getNoise(NMRDataStruct& components)
+{
+	QVector<double> approximated_A;
+	approximated_A.resize(t_.size());
+	approximated_A.fill(0);
+	for(int i = 0; i < components.A.size(); ++i)
+	{
+		for(int j = 0; j < approximated_A.size(); ++j)
+		{
+			approximated_A[j] += components.A[i] * exp(-this->t_[j] / components.t[i]);
+		}
+	}
+
+	for(int j = 0; j < approximated_A.size(); ++j)
+	{
+		approximated_A[j] -= this->A_[j];
+	}
+
+	components.p = approximated_A;
+	components.pt = this->t_;
 }
 
 NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)

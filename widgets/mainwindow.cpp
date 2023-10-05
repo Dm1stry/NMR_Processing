@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget * parent)
     log_widget_(new LogWidget),
     plot_widget_(new PlotWidget),
     spectrum_widget_(new PlotWidget),
+    noise_widget_(new PlotWidget),
     process_widget_(new ProcessWidget)
 {
     qRegisterMetaType<NMRDataStruct>("NMRDataStruct");
@@ -32,6 +33,7 @@ inline void MainWindow::connections()
     connect(this->data_, SIGNAL(rawDataCleared()), this->spectrum_widget_, SLOT(clear()));
 
     connect(this->process_widget_, SIGNAL(componentsFound(const NMRDataStruct&)), this->data_, SLOT(setComponents(const NMRDataStruct&)));
+    connect(this->data_, SIGNAL(componentsUpdated(const NMRDataStruct&)), this->noise_widget_, SLOT(updateAsSpectrum(const NMRDataStruct&)));
     connect(this->data_, SIGNAL(componentsUpdated(const NMRDataStruct&)), this->log_widget_, SLOT(printComponents(const NMRDataStruct&)));
 
     //connect(this->data_, SIGNAL())
@@ -41,6 +43,25 @@ inline void MainWindow::connections()
 
 inline void MainWindow::layoutSetup()
 {
+    /*QDockWidget * filesystem_dock = new QDockWidget("Файловая система", this);
+    filesystem_dock->setWidget(this->filesystem_widget_);
+
+    QDockWidget * log_dock = new QDockWidget(this);
+    log_dock->setWidget(this->log_widget_);*/
+    //this->noise_widget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    QSizePolicy plot_policy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    plot_policy.setVerticalStretch(2);
+    QSizePolicy noise_policy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    noise_policy.setVerticalStretch(1);
+
+    QFrame * line = new QFrame;
+    line->setFixedHeight(2);
+    line->setFrameShape(QFrame::HLine);
+
+    this->plot_widget_->setSizePolicy(plot_policy);
+    this->spectrum_widget_->setSizePolicy(plot_policy);
+    this->noise_widget_->setSizePolicy(noise_policy);
+
     QHBoxLayout * main_layout = new QHBoxLayout;
 
     QVBoxLayout * left_layout = new QVBoxLayout;
@@ -53,6 +74,8 @@ inline void MainWindow::layoutSetup()
     mid_layout->addWidget(this->process_widget_);
 
     right_layout->addWidget(this->plot_widget_);
+    right_layout->addWidget(this->noise_widget_);
+    right_layout->addWidget(line);
     right_layout->addWidget(this->spectrum_widget_);
 
     main_layout->addLayout(left_layout);

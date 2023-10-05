@@ -25,8 +25,9 @@ public:
 
 private:
     NMRDataStruct convert_spectrum(NMRDataStruct& processed_data);
-    void getComponents(const NMRDataStruct& processed_data);
+    inline void getComponents(const NMRDataStruct& processed_data);
     inline double find_peak_S(const size_t& peak_index);
+    inline void getNoise(NMRDataStruct& components);
 
     double alpha_;
     uint iterations_;
