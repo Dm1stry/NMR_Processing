@@ -39,5 +39,41 @@ inline std::vector<size_t> argmax(RandomIt x_begin, RandomIt x_end)
     return peaks;
 }
 
+template<class RandomIt>
+inline std::vector<size_t> argmin(RandomIt x_begin, RandomIt x_end)
+{
+    if(x_begin == x_end)
+    {
+        return {};
+    }
+    std::vector<size_t> peaks;
+    for(auto x_current = x_begin + 1; x_current < x_end - 1; ++x_current)
+    {
+        if(*x_current < *(x_current - 1) && *x_current < *(x_current + 1))
+        {
+            peaks.push_back(x_current - x_begin);
+        }
+    }
+    return peaks;
+}
+
+template<class RandomIt>
+inline std::vector<size_t> argmineq(RandomIt x_begin, RandomIt x_end)
+{
+    if(x_begin == x_end)
+    {
+        return {};
+    }
+    std::vector<size_t> peaks;
+    for(auto x_current = x_begin + 1; x_current < x_end - 1; ++x_current)
+    {
+        if(*x_current < *(x_current - 1) && *x_current <= *(x_current + 1) || *x_current <= *(x_current - 1) && *x_current < *(x_current + 1))
+        {
+            peaks.push_back(x_current - x_begin);
+        }
+    }
+    return peaks;
+}
+
 std::vector<double> logspace(double start, double stop, size_t number, double base = 10.0, bool endpoint = true);
 #endif
