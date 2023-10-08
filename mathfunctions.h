@@ -73,13 +73,25 @@ inline std::vector<size_t> argmineq(RandomIt x_begin, RandomIt x_end)
     {
         return {};
     }
+    if(x_end - x_begin == 1)
+    {
+        return {0};
+    }
     std::vector<size_t> peaks;
+    if(*x_begin < *(x_begin + 1))
+    {
+        peaks.push_back(0);
+    }
     for(auto x_current = x_begin + 1; x_current < x_end - 1; ++x_current)
     {
         if(*x_current < *(x_current - 1) && *x_current <= *(x_current + 1) || *x_current <= *(x_current - 1) && *x_current < *(x_current + 1))
         {
             peaks.push_back(x_current - x_begin);
         }
+    }
+    if((x_end - 2) >= x_begin && *(x_end - 1) < *(x_end - 2))
+    {
+        peaks.push_back((x_end - x_begin) - 1);
     }
     return peaks;
 }
@@ -96,13 +108,14 @@ inline Iterator find_nearest_greater(const Item& value, Iterator x_begin, Iterat
     {
         return x_end;
     }
-    for(auto x_current = x_begin + 1; x_current < x_end - 1; ++x_current)
+    for(auto x_current = x_begin; x_current < x_end; ++x_current)
     {
         if(*x_current > value)
         {
             return x_current;
         }
     }
+    return x_end;
 }
 
 
@@ -117,13 +130,14 @@ inline Iterator find_nearest_less(const Item& value, Iterator x_begin, Iterator 
     {
         return x_end;
     }
-    for(auto x_current = x_end - 1; x_current > x_begin; --x_current)
+    for(auto x_current = x_end - 1; x_current >= x_begin; --x_current)
     {
         if(*x_current < value)
         {
             return x_current;
         }
     }
+    return x_end;
 }
 
 std::vector<double> logspace(double start, double stop, size_t number, double base = 10.0, bool endpoint = true);
