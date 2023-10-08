@@ -146,7 +146,9 @@ void TikhonovProcessor::Process()
 	gsl_vector * A = gsl_vector_alloc(t_size);
 	gsl_blas_dgemv(CblasNoTrans, 1, K, r, 0, A);
 	A_appr_ = QVector<double>(A->data, A->data + A->size);
-	pt_.reserve(p_size_ + 1);
+	pt_.clear();
+	if(capacity_needed > 0)
+		pt_.reserve(capacity_needed);
 	for(auto p : p_)
 	{
 		pt_.push_back(1/p);
@@ -190,11 +192,12 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 {
 	double full_S = abs(trapz_intergal(pt_.begin(), pt_.end(), p_.begin(), p_.end()));
 	std::vector<size_t> peaks = argmax(p_.begin(), p_.end());
+	std::vector<size_t> minimums = argmineq(p_.begin(), p_.end());
 	QVector<double> M;
 	QVector<double> T;
 	for(auto peak : peaks)
 	{
-		double peak_S = find_peak_S(peak);
+		double peak_S = find_peak_S(peak, minimums);
 		//M.push_back(peak_S / full_S);
 		//T.push_back(this->pt_[peak]);
 		if(peak_S > 0.005)
@@ -214,31 +217,15 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 	emit componentsFound(components);
 }
 
-inline double TikhonovProcessor::find_peak_S(const size_t& peak_index)
+inline double TikhonovProcessor::find_peak_S(const size_t& peak_index, std::vector<size_t> minimums)
 {
-	unsigned int current_index_up = peak_index;
-	unsigned int current_index_down = peak_index;
-	while(this->p_[current_index_up] != 0)
-	{
-		if(current_index_up == this->p_.size() - 1)
-		{
-			break;
-		}
-		++current_index_up;
-	}
-	while(this->p_[current_index_down] != 0)
-	{
-		if(current_index_down == 0)
-		{
-			break;
-		}
-		--current_index_down;
-	}
+	auto current_index_up = *find_nearest_greater(peak_index, minimums.begin(), minimums.end());
+	auto current_index_down = *find_nearest_less(peak_index, minimums.begin(), minimums.end());
 	return abs(trapz_intergal(
 		this->pt_.begin() + current_index_down, 
-		this->pt_.end() - current_index_up,
+		this->pt_.begin() + current_index_up,
 		this->p_.begin() + current_index_down, 
-		this->p_.end() - current_index_up
+		this->p_.begin() + current_index_up
 	));
 }
 
