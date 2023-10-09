@@ -1,19 +1,24 @@
 #include "tikhonovprocessor.h"
-#include <sys/types.h>
-#include <stdio.h>
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_linalg.h>
+#include <armadillo>
 
 #include <QDebug>
 
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
-  : BaseProcessor(parent)
+  : BaseProcessor(parent),
+	alpha_(200),
+	iterations_(1000),
+	T_min_(100),
+	T_max_(1e9),
+	p_size_(1000),
+	memory_(new double[p_size_ * 10000]),
+	first_free_cell_(memory_),
+	memory_size_(p_size_ * 10000)
+{}
+
+TikhonovProcessor::~TikhonovProcessor()
 {
-	alpha_ = 200;
-	iterations_ = 100;
-	T_min_ = 100;
-	T_max_ = 1e9;
-	p_size_ = 100;
+	delete[] this->memory_;
+	this->memory_ = nullptr;
 }
 
 void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
@@ -42,6 +47,7 @@ void TikhonovProcessor::updateParameter(QString parameter_name, QVariant paramet
 	{
 	this->p_size_ = parameter_value.toUInt();
 	qDebug() << "p: " << p_size_;
+	enlargeMemory(this->p_size_, this->A_.size());
 	}
 }
 
@@ -49,6 +55,7 @@ void TikhonovProcessor::updateData(const NMRDataStruct& raw_data)
 {
 	this->t_ = raw_data.t;
 	this->A_ = raw_data.A;
+	enlargeMemory(this->p_size_, this->A_.size());
 }
 
 void TikhonovProcessor::Process()
@@ -70,7 +77,10 @@ void TikhonovProcessor::Process()
     }
   //---------------------------------------------
 	uint t_size = this->t_.size();
-	gsl_matrix * K = gsl_matrix_alloc(t_size, p_size_);
+	enlargeMemory(this->p_size_, t_size);
+
+	//gsl_matrix * K = gsl_matrix_alloc(t_size, p_size_);
+	arma::mat K(getMemory(t_size * p_size_), t_size, p_size_, false, true);
 	/*
 	for(uint p_index = 0; p_index < p_size_; ++p_index)
 	{
@@ -84,39 +94,37 @@ void TikhonovProcessor::Process()
 	{
 		for(uint p_index = 0; p_index < p_size_; ++p_index)
 		{
-			K->data[t_index * K->tda + p_index] = exp(-p_[p_index] * t_[t_index]);
+			K(t_index, p_index) = exp(-p_[p_index] * t_[t_index]);
 		}
 	}
 
 	emit processingStateUpdate(2);
-	gsl_vector * s = gsl_vector_alloc(t_size);
-	auto s_ptr = s->data;
-	for(auto A_it = A_.begin(); A_it < A_.end(); A_it++, ++s_ptr)
-	{
-		*s_ptr = *A_it;
-	}
+	//gsl_vector * s = gsl_vector_alloc(t_size);
+	arma::colvec s(A_.data(), t_size, false, true);
 	
+	double * K_t_ptr = getMemory(p_size_ * t_size);
+	arma::mat K_t(K_t_ptr, p_size_, t_size, false, true);
+	K_t = K.t();
 	//W = (K_t * K + E{p_size_, p_size_} * alpha_)^(-1)
-	gsl_matrix * W = gsl_matrix_alloc(p_size_, p_size_);
-	gsl_matrix_set_identity(W);
-	int status = gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1, K, K, this->alpha_, W);
+	qDebug() << first_free_cell_ - memory_ << p_size_ << t_size << memory_size_;
+	arma::mat W(getMemory(p_size_ * p_size_), p_size_, p_size_, false, true);
+	W.eye();
 
-	gsl_permutation * p = gsl_permutation_alloc(p_size_);
-    int signum = 1;
-
-	gsl_linalg_LU_decomp(W, p, &signum); // - нужно инвертировать W
-	gsl_linalg_LU_invert(W, p, W);
+	W = W * this->alpha_;
+	W += K_t * K;
+	W = inv(W);
 
 	emit processingStateUpdate(4);
 
 	//W_K_t_s = W * (K_t * s)
-	gsl_vector * K_t_s = gsl_vector_alloc(p_size_);
-	status = gsl_blas_dgemv(CblasTrans, 1, K, s, 0, K_t_s);
+	arma::colvec W_K_t_s(K_t_ptr, p_size_, false, true);
+	W_K_t_s = K_t * s;
+	W_K_t_s = W * W_K_t_s;
 
-	gsl_vector * W_K_t_s = gsl_vector_alloc(p_size_);
-	status = gsl_blas_dgemv(CblasNoTrans, 1, W, K_t_s, 0, W_K_t_s);
-
-	gsl_vector * r = gsl_vector_calloc(p_size_);
+	W *= this->alpha_;
+	
+	arma::vec r(getMemory(p_size_), p_size_, false, true);
+	r.zeros();
 
 	emit processingStateUpdate(5);
 	
@@ -127,9 +135,9 @@ void TikhonovProcessor::Process()
 	for(size_t iteration = 0; iteration < this->iterations_; ++iteration)
 	{
 		//r = W_K_t_s + W_alpha * r;
-		gsl_blas_dgemv(CblasNoTrans, this->alpha_, W, r, 0, r);
-		gsl_blas_daxpy(1, W_K_t_s, r);
-		for(auto r_iterator = r->data; r_iterator < r->data + r->size; ++r_iterator)
+		r += W_K_t_s + W * r;
+		//r += W;
+		for(auto r_iterator = r.begin(); r_iterator < r.end(); ++r_iterator)
 		{
 			if(*r_iterator < 0)
 			{
@@ -143,9 +151,9 @@ void TikhonovProcessor::Process()
 		}
 	}
 
-	gsl_vector * A = gsl_vector_alloc(t_size);
-	gsl_blas_dgemv(CblasNoTrans, 1, K, r, 0, A);
-	A_appr_ = QVector<double>(A->data, A->data + A->size);
+	arma::vec A(K_t_ptr, t_size, false, true);
+	A = K * r;
+	A_appr_ = QVector<double>(A.begin(), A.end());
 	pt_.clear();
 	if(capacity_needed > 0)
 		pt_.reserve(capacity_needed);
@@ -153,7 +161,7 @@ void TikhonovProcessor::Process()
 	{
 		pt_.push_back(1/p);
 	}
-	p_ = QVector<double>(r->data, r->data + r->size);
+	p_ = QVector<double>(r.begin(), r.end());
 	p_max = *std::max_element(p_.begin(), p_.end());
 	for(auto& p_i : p_)
 	{
@@ -172,20 +180,8 @@ void TikhonovProcessor::Process()
 	this->getComponents(processed_data);
 	emit processingStateUpdate(0);
 
-	gsl_matrix_free(K);
-	gsl_matrix_free(W);
-	gsl_vector_free(s);
-	gsl_vector_free(K_t_s);
-	gsl_vector_free(W_K_t_s);
-	gsl_vector_free(r);
-	gsl_vector_free(A);
-	K = nullptr;
-	W = nullptr;
-	s = nullptr;
-	K_t_s = nullptr;
-	W_K_t_s = nullptr;
-	r = nullptr;
-	A = nullptr;
+	clearMemory();
+	
 }  //void TikhonovProcessor::Process()
 
 void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
@@ -254,4 +250,27 @@ void TikhonovProcessor::getNoise(NMRDataStruct& components)
 NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)
 {
     return processed_data;
+}
+
+void TikhonovProcessor::enlargeMemory(const uint& p_size, const uint& t_size)
+{
+	if(p_size * (2 * t_size + p_size + 1) > this->memory_size_)
+	{
+		this->memory_size_ = p_size * (2 * t_size + p_size + 1);
+		delete[] this->memory_;
+		this->memory_ = new double[this->memory_size_ + 1];
+		this->first_free_cell_ = this->memory_;
+	}
+}
+
+double * TikhonovProcessor::getMemory(const size_t& size)
+{
+	double * returnable = this->first_free_cell_;
+	this->first_free_cell_ += size;
+	return returnable;
+}
+
+void TikhonovProcessor::clearMemory()
+{
+	first_free_cell_ = memory_;
 }
