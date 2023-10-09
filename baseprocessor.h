@@ -14,6 +14,7 @@ class BaseProcessor : public QObject
 Q_OBJECT
 public:
     BaseProcessor(QObject * parent = nullptr);
+    virtual ~BaseProcessor();
 public slots:
     virtual void Process() = 0;
     virtual void updateParameter(QString parameter_name, QVariant parameter_value) = 0;

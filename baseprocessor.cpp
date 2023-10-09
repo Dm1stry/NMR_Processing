@@ -8,3 +8,6 @@ void BaseProcessor::clearData()
 {
 	this->updateData({});
 }
+
+BaseProcessor::~BaseProcessor()
+{}
