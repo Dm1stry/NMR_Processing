@@ -66,7 +66,7 @@ void TikhonovProcessor::Process()
 	p_.clear();
 	int capacity_needed = this->p_size_ + 1 - p_.capacity();
 	if(capacity_needed > 0)
-    	p_.reserve(capacity_needed);
+    	p_.reserve(this->p_size_ + 1);
     double p_min = -log10(this->T_max_);
     double p_max = -log10(this->T_min_);
     double p_step = (p_max - p_min) / (this->p_size_ - 1);
@@ -79,16 +79,7 @@ void TikhonovProcessor::Process()
 	uint t_size = this->t_.size();
 	enlargeMemory(this->p_size_, t_size);
 
-	//gsl_matrix * K = gsl_matrix_alloc(t_size, p_size_);
 	arma::mat K(getMemory(t_size * p_size_), t_size, p_size_, false, true);
-	/*
-	for(uint p_index = 0; p_index < p_size_; ++p_index)
-	{
-		for(uint t_index = 0; t_index < t_size; ++t_index)
-		{
-			K->data[p_index * K->tda + t_index] = exp(-p_[p_index] * t_[t_index]);
-		}
-	}*/
 
 	for(uint t_index = 0; t_index < t_size; ++t_index)
 	{
@@ -106,24 +97,23 @@ void TikhonovProcessor::Process()
 	arma::mat K_t(K_t_ptr, p_size_, t_size, false, true);
 	K_t = K.t();
 	//W = (K_t * K + E{p_size_, p_size_} * alpha_)^(-1)
-	qDebug() << first_free_cell_ - memory_ << p_size_ << t_size << memory_size_;
+	
 	arma::mat W(getMemory(p_size_ * p_size_), p_size_, p_size_, false, true);
-	W.eye();
 
-	W = W * this->alpha_;
+	W = W.eye() * this->alpha_;
 	W += K_t * K;
-	W = inv(W);
+	W = inv(W);  //Спорно
 
 	emit processingStateUpdate(4);
 
 	//W_K_t_s = W * (K_t * s)
 	arma::colvec W_K_t_s(K_t_ptr, p_size_, false, true);
-	W_K_t_s = K_t * s;
+	W_K_t_s = K_t * s;  //Спорно
 	W_K_t_s = W * W_K_t_s;
 
 	W *= this->alpha_;
 	
-	arma::vec r(getMemory(p_size_), p_size_, false, true);
+	arma::colvec r(getMemory(p_size_), p_size_, false, true);
 	r.zeros();
 
 	emit processingStateUpdate(5);
@@ -135,7 +125,7 @@ void TikhonovProcessor::Process()
 	for(size_t iteration = 0; iteration < this->iterations_; ++iteration)
 	{
 		//r = W_K_t_s + W_alpha * r;
-		r += W_K_t_s + W * r;
+		r = W_K_t_s + W * r;
 		//r += W;
 		for(auto r_iterator = r.begin(); r_iterator < r.end(); ++r_iterator)
 		{
@@ -156,7 +146,7 @@ void TikhonovProcessor::Process()
 	A_appr_ = QVector<double>(A.begin(), A.end());
 	pt_.clear();
 	if(capacity_needed > 0)
-		pt_.reserve(capacity_needed);
+		pt_.reserve(this->p_size_ + 1);
 	for(auto p : p_)
 	{
 		pt_.push_back(1/p);
@@ -194,12 +184,12 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 	for(auto peak : peaks)
 	{
 		double peak_S = find_peak_S(peak, minimums);
-		//M.push_back(peak_S / full_S);
-		//T.push_back(this->pt_[peak]);
+		M.push_back(peak_S / full_S);
+		T.push_back(this->pt_[peak]);
 		if(peak_S > 0.005)
 		{
-			M.push_back(peak_S / full_S);
-			T.push_back(this->pt_[peak]);
+			//M.push_back(peak_S / full_S);
+			//T.push_back(this->pt_[peak]);
 		}
 	}
 
@@ -215,8 +205,17 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 
 inline double TikhonovProcessor::find_peak_S(const size_t& peak_index, std::vector<size_t> minimums)
 {
-	auto current_index_up = *find_nearest_greater(peak_index, minimums.begin(), minimums.end());
-	auto current_index_down = *find_nearest_less(peak_index, minimums.begin(), minimums.end());
+	auto current_iter_up = find_nearest_greater(peak_index, minimums.begin(), minimums.end());
+	size_t current_index_up = this->p_.length() - 1;
+	if(current_iter_up != minimums.end())
+		current_index_up = *current_iter_up;
+
+	auto current_iter_down = find_nearest_less(peak_index, minimums.begin(), minimums.end());
+	size_t current_index_down = 0;
+	if(current_iter_down != minimums.end())
+		current_index_down = *current_iter_down;
+
+
 	return abs(trapz_intergal(
 		this->pt_.begin() + current_index_down, 
 		this->pt_.begin() + current_index_up,
