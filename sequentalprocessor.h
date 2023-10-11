@@ -21,6 +21,8 @@ private:
     QVector<double> A_appr_;
     QVector<double> pt_;
     QVector<double> p_;
+
+    uint N_max_;
 };
 
 #endif
