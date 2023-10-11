@@ -177,7 +177,7 @@ void TikhonovProcessor::Process()
 void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 {
 	double full_S = abs(trapz_intergal(pt_.begin(), pt_.end(), p_.begin(), p_.end()));
-	std::vector<size_t> peaks = argmax(p_.begin(), p_.end());
+	std::vector<size_t> peaks = argmax(p_.begin(), p_.end()); //error is here
 	std::vector<size_t> minimums = argmineq(p_.begin(), p_.end());
 	QVector<double> M;
 	QVector<double> T;
@@ -186,11 +186,11 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 		double peak_S = find_peak_S(peak, minimums);
 		M.push_back(peak_S / full_S);
 		T.push_back(this->pt_[peak]);
-		if(peak_S > 0.005)
+		/*if(peak_S > 0.005)
 		{
 			//M.push_back(peak_S / full_S);
 			//T.push_back(this->pt_[peak]);
-		}
+		}*/
 	}
 
 	NMRDataStruct components{
@@ -218,15 +218,15 @@ inline double TikhonovProcessor::find_peak_S(const size_t& peak_index, std::vect
 
 	return abs(trapz_intergal(
 		this->pt_.begin() + current_index_down, 
-		this->pt_.begin() + current_index_up,
+		this->pt_.begin() + current_index_up + 1,
 		this->p_.begin() + current_index_down, 
-		this->p_.begin() + current_index_up
+		this->p_.begin() + current_index_up + 1
 	));
 }
 
 void TikhonovProcessor::getNoise(NMRDataStruct& components)
 {
-	QVector<double> approximated_A;
+	/*QVector<double> approximated_A;
 	approximated_A.resize(t_.size());
 	approximated_A.fill(0);
 	for(int i = 0; i < components.A.size(); ++i)
@@ -237,12 +237,18 @@ void TikhonovProcessor::getNoise(NMRDataStruct& components)
 		}
 	}
 
-	for(int j = 0; j < approximated_A.size(); ++j)
+	for(int j = 0; j < this->A_.size(); ++j)
 	{
 		approximated_A[j] -= this->A_[j];
 	}
 
-	components.p = approximated_A;
+	components.p = approximated_A;*/
+	for(int j = 0; j < this->A_.size(); ++j)
+	{
+		this->A_appr_[j] -= this->A_[j];
+	}
+
+	components.p = this->A_appr_;
 	components.pt = this->t_;
 }
 
