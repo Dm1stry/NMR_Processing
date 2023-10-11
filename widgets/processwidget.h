@@ -4,6 +4,7 @@
 #include <QTabWidget>
 
 #include "tikhonovprocesswidget.h"
+#include "sequentalprocesswidget.h"
 #include "nmrdatastruct.h"
 
 

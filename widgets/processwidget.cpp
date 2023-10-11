@@ -4,6 +4,7 @@ ProcessWidget::ProcessWidget(QWidget * parent)
   : QTabWidget(parent)
 {
 	this->addProcessWidget(new TikhonovProcessWidget(this));
+	this->addProcessWidget(new SequentalProcessWidget(this));
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 }
 

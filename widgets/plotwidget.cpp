@@ -3,11 +3,11 @@
 PlotWidget::PlotWidget(QWidget * parent /*= nullptr*/)
   : QWidget(parent),
   	plot_(new CustomPlotZoom),
-    //plot_(new QCustomPlot),
     x_label_(new QLabel("X:")),
     x_box_(new QComboBox),
     y_label_(new QLabel("Y:")),
     y_box_(new QComboBox),
+	home_button_(new QPushButton),
 	scale_types_({{"Линейно", QCPAxis::ScaleType::stLinear}, {"Логарифмически", QCPAxis::ScaleType::stLogarithmic}})
 {
 	this->plot_->setZoomMode(true);
@@ -24,13 +24,21 @@ inline void PlotWidget::connections()
 {
 	connect(this->x_box_, SIGNAL(activated(int)), this, SLOT(rescaleXAxis(int)));
 	connect(this->y_box_, SIGNAL(activated(int)), this, SLOT(rescaleYAxis(int)));
+
+	connect(this->home_button_, SIGNAL(clicked()), this, SLOT(homeView()));
 }
 
 inline void PlotWidget::layoutSetup()
 {
-	QVBoxLayout * widget_layout = new QVBoxLayout;
+	this->home_button_->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+	//this->home_button_->setIcon()
 
-	widget_layout->addWidget(this->plot_);
+	QHBoxLayout * widget_layout = new QHBoxLayout;
+
+	QVBoxLayout * plot_layout = new QVBoxLayout;
+	QVBoxLayout * buttons_layout = new QVBoxLayout;
+
+	plot_layout->addWidget(this->plot_);
 
 	QHBoxLayout * scale_layout = new QHBoxLayout;
 	
@@ -45,8 +53,13 @@ inline void PlotWidget::layoutSetup()
 	scale_layout->addWidget(this->y_label_);
 	scale_layout->addWidget(this->y_box_);
 	
+	plot_layout->addLayout(scale_layout);  
 
-	widget_layout->addLayout(scale_layout);    
+	widget_layout->addLayout(plot_layout);
+
+	buttons_layout->addWidget(this->home_button_);
+
+	widget_layout->addLayout(buttons_layout);  
 
 	this->setLayout(widget_layout);
 
@@ -59,9 +72,10 @@ void PlotWidget::updateData(QVector<double> x, QVector<double> y, int number)
 	{
 		this->graph_numbers_[number] = this->plot_->graphCount();
 		this->plot_->addGraph();
+		this->plot_->graph(this->graph_numbers_[number])->setPen(QPen(Qt::red));
 	}
 	this->plot_->graph(this->graph_numbers_[number])->setData(x, y);
-	this->plot_->graph(this->graph_numbers_[number])->rescaleAxes(true);
+	this->plot_->graph(this->graph_numbers_[number])->rescaleAxes();
 	this->plot_->replot();
 }
 
@@ -127,4 +141,10 @@ void PlotWidget::rescaleXAxis(int scale_type)
 void PlotWidget::rescaleYAxis(int scale_type)
 {
 	this->rescaleAxis(scale_type, false);
+}
+
+void PlotWidget::homeView()
+{
+	this->plot_->rescaleAxes();
+	this->plot_->replot();
 }

@@ -1,6 +1,7 @@
 #ifndef MATHFUNCTIONS_H
 #define MATHFUNCTIONS_H
 #include <vector>
+#include <map>
 
 double trapz_intergal(std::vector<double> x, std::vector<double> y);
 
@@ -21,6 +22,10 @@ inline double trapz_intergal(RandomIt x_begin, RandomIt x_end, RandomIt y_begin,
     return sum;
 }
 
+
+/*
+* Returns vector of local maximums in collection
+*/
 template<class RandomIt>
 inline std::vector<size_t> argmax(RandomIt x_begin, RandomIt x_end)
 {
@@ -37,6 +42,102 @@ inline std::vector<size_t> argmax(RandomIt x_begin, RandomIt x_end)
         }
     }
     return peaks;
+}
+
+
+/*
+* Returns vector of local minimums in collection
+*/
+template<class RandomIt>
+inline std::vector<size_t> argmin(RandomIt x_begin, RandomIt x_end)
+{
+    if(x_begin == x_end)
+    {
+        return {};
+    }
+    std::vector<size_t> peaks;
+    for(auto x_current = x_begin + 1; x_current < x_end - 1; ++x_current)
+    {
+        if(*x_current < *(x_current - 1) && *x_current < *(x_current + 1))
+        {
+            peaks.push_back(x_current - x_begin);
+        }
+    }
+    return peaks;
+}
+
+template<class RandomIt>
+inline std::vector<size_t> argmineq(RandomIt x_begin, RandomIt x_end)
+{
+    if(x_begin == x_end)
+    {
+        return {};
+    }
+    if(x_end - x_begin == 1)
+    {
+        return {0};
+    }
+    std::vector<size_t> peaks;
+    if(*x_begin < *(x_begin + 1))
+    {
+        peaks.push_back(0);
+    }
+    for(auto x_current = x_begin + 1; x_current < x_end - 1; ++x_current)
+    {
+        if(*x_current < *(x_current - 1) && *x_current <= *(x_current + 1) || *x_current <= *(x_current - 1) && *x_current < *(x_current + 1))
+        {
+            peaks.push_back(x_current - x_begin);
+        }
+    }
+    if((x_end - 2) >= x_begin && *(x_end - 1) < *(x_end - 2))
+    {
+        peaks.push_back((x_end - x_begin) - 1);
+    }
+    return peaks;
+}
+
+
+/*
+* Returns iterator that points on element of the collection, that is greater then the given value and nearest to it
+* if there is no element like that, returns end iterator
+*/
+template<class Item, class Iterator>
+inline Iterator find_nearest_greater(const Item& value, Iterator x_begin, Iterator x_end)
+{
+    if(x_begin == x_end || *(x_end - 1) <= value)
+    {
+        return x_end;
+    }
+    for(auto x_current = x_begin; x_current < x_end; ++x_current)
+    {
+        if(*x_current > value)
+        {
+            return x_current;
+        }
+    }
+    return x_end;
+}
+
+
+/*
+* Returns iterator that points on element of the collection, that is less then the given value and nearest to it
+* if there is no element like that, returns end iterator
+*/
+template<class Item, class Iterator>
+inline Iterator find_nearest_less(const Item& value, Iterator x_begin, Iterator x_end)
+{
+    if(x_begin == x_end || *(x_begin) >= value)
+    {
+        return x_end;
+    }
+    for(auto x_current = x_end - 1; x_current >= x_begin; --x_current)
+    {
+        if(*x_current < value)
+        {
+            return x_current;
+        }
+    }
+    return x_end;
 }
 
 std::vector<double> logspace(double start, double stop, size_t number, double base = 10.0, bool endpoint = true);

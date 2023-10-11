@@ -1,21 +1,24 @@
 #include "tikhonovprocessor.h"
-#include <sys/types.h>
-#include <stdio.h>
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_linalg.h>
+#include <armadillo>
+
+#include <QDebug>
 
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
-  : BaseProcessor(parent)
+  : BaseProcessor(parent),
+	alpha_(200),
+	iterations_(1000),
+	T_min_(100),
+	T_max_(1e9),
+	p_size_(1000),
+	memory_(new double[p_size_ * 10000]),
+	first_free_cell_(memory_),
+	memory_size_(p_size_ * 10000)
+{}
+
+TikhonovProcessor::~TikhonovProcessor()
 {
-    //temoporary set up
-
-	alpha_ = 200;
-	iterations_ = 1000;
-	T_min_ = 100;
-	T_max_ = 1e8;
-	p_size_ = 1000;
-
-
+	delete[] this->memory_;
+	this->memory_ = nullptr;
 }
 
 void TikhonovProcessor::updateParameter(QString parameter_name, QVariant parameter_value)
@@ -23,22 +26,28 @@ void TikhonovProcessor::updateParameter(QString parameter_name, QVariant paramet
 	if(parameter_name == "alpha")
 	{
 	this->alpha_ = parameter_value.toDouble();
+	qDebug() << "alpha: " << alpha_;
 	}
 	else if(parameter_name == "iterations")
 	{
 	this->iterations_ = parameter_value.toUInt();
+	qDebug() << "iterations: " << iterations_;
 	}
 	else if(parameter_name == "T2min")
 	{
 	this->T_min_ = parameter_value.toDouble();
+	qDebug() << "Tmin: " << T_min_;
 	}
 	else if(parameter_name == "T2max")
 	{
 	this->T_max_ = parameter_value.toDouble();
+	qDebug() << "Tmax: " << T_max_;
 	}
 	else if(parameter_name == "p_size")
 	{
 	this->p_size_ = parameter_value.toUInt();
+	qDebug() << "p: " << p_size_;
+	enlargeMemory(this->p_size_, this->A_.size());
 	}
 }
 
@@ -46,6 +55,7 @@ void TikhonovProcessor::updateData(const NMRDataStruct& raw_data)
 {
 	this->t_ = raw_data.t;
 	this->A_ = raw_data.A;
+	enlargeMemory(this->p_size_, this->A_.size());
 }
 
 void TikhonovProcessor::Process()
@@ -56,7 +66,7 @@ void TikhonovProcessor::Process()
 	p_.clear();
 	int capacity_needed = this->p_size_ + 1 - p_.capacity();
 	if(capacity_needed > 0)
-    	p_.reserve(capacity_needed);
+    	p_.reserve(this->p_size_ + 1);
     double p_min = -log10(this->T_max_);
     double p_max = -log10(this->T_min_);
     double p_step = (p_max - p_min) / (this->p_size_ - 1);
@@ -67,53 +77,44 @@ void TikhonovProcessor::Process()
     }
   //---------------------------------------------
 	uint t_size = this->t_.size();
-	gsl_matrix * K = gsl_matrix_alloc(t_size, p_size_);
-	/*
-	for(uint p_index = 0; p_index < p_size_; ++p_index)
-	{
-		for(uint t_index = 0; t_index < t_size; ++t_index)
-		{
-			K->data[p_index * K->tda + t_index] = exp(-p_[p_index] * t_[t_index]);
-		}
-	}*/
+	enlargeMemory(this->p_size_, t_size);
+
+	arma::mat K(getMemory(t_size * p_size_), t_size, p_size_, false, true);
 
 	for(uint t_index = 0; t_index < t_size; ++t_index)
 	{
 		for(uint p_index = 0; p_index < p_size_; ++p_index)
 		{
-			K->data[t_index * K->tda + p_index] = exp(-p_[p_index] * t_[t_index]);
+			K(t_index, p_index) = exp(-p_[p_index] * t_[t_index]);
 		}
 	}
 
 	emit processingStateUpdate(2);
-	gsl_vector * s = gsl_vector_alloc(t_size);
-	auto s_ptr = s->data;
-	for(auto A_it = A_.begin(); A_it < A_.end(); A_it++, ++s_ptr)
-	{
-		*s_ptr = *A_it;
-	}
+	//gsl_vector * s = gsl_vector_alloc(t_size);
+	arma::colvec s(A_.data(), t_size, false, true);
 	
+	double * K_t_ptr = getMemory(p_size_ * t_size);
+	arma::mat K_t(K_t_ptr, p_size_, t_size, false, true);
+	K_t = K.t();
 	//W = (K_t * K + E{p_size_, p_size_} * alpha_)^(-1)
-	gsl_matrix * W = gsl_matrix_alloc(p_size_, p_size_);
-	gsl_matrix_set_identity(W);
-	int status = gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1, K, K, this->alpha_, W);
+	
+	arma::mat W(getMemory(p_size_ * p_size_), p_size_, p_size_, false, true);
 
-	gsl_permutation * p = gsl_permutation_alloc(p_size_);
-    int signum = 1;
-
-	gsl_linalg_LU_decomp(W, p, &signum); // - нужно инвертировать W
-	gsl_linalg_LU_invert(W, p, W);
+	W = W.eye() * this->alpha_;
+	W += K_t * K;
+	W = inv(W);  //Спорно
 
 	emit processingStateUpdate(4);
 
 	//W_K_t_s = W * (K_t * s)
-	gsl_vector * K_t_s = gsl_vector_alloc(p_size_);
-	status = gsl_blas_dgemv(CblasTrans, 1, K, s, 0, K_t_s);
+	arma::colvec W_K_t_s(K_t_ptr, p_size_, false, true);
+	W_K_t_s = K_t * s;  //Спорно
+	W_K_t_s = W * W_K_t_s;
 
-	gsl_vector * W_K_t_s = gsl_vector_alloc(p_size_);
-	status = gsl_blas_dgemv(CblasNoTrans, 1, W, K_t_s, 0, W_K_t_s);
-
-	gsl_vector * r = gsl_vector_calloc(p_size_);
+	W *= this->alpha_;
+	
+	arma::colvec r(getMemory(p_size_), p_size_, false, true);
+	r.zeros();
 
 	emit processingStateUpdate(5);
 	
@@ -124,9 +125,9 @@ void TikhonovProcessor::Process()
 	for(size_t iteration = 0; iteration < this->iterations_; ++iteration)
 	{
 		//r = W_K_t_s + W_alpha * r;
-		gsl_blas_dgemv(CblasNoTrans, this->alpha_, W, r, 0, r);
-		gsl_blas_daxpy(1, W_K_t_s, r);
-		for(auto r_iterator = r->data; r_iterator < r->data + r->size; ++r_iterator)
+		r = W_K_t_s + W * r;
+		//r += W;
+		for(auto r_iterator = r.begin(); r_iterator < r.end(); ++r_iterator)
 		{
 			if(*r_iterator < 0)
 			{
@@ -140,15 +141,17 @@ void TikhonovProcessor::Process()
 		}
 	}
 
-	gsl_vector * A = gsl_vector_alloc(t_size);
-	gsl_blas_dgemv(CblasNoTrans, 1, K, r, 0, A);
-	A_appr_ = QVector<double>(A->data, A->data + A->size);
-	pt_.reserve(p_size_ + 1);
+	arma::vec A(K_t_ptr, t_size, false, true);
+	A = K * r;
+	A_appr_ = QVector<double>(A.begin(), A.end());
+	pt_.clear();
+	if(capacity_needed > 0)
+		pt_.reserve(this->p_size_ + 1);
 	for(auto p : p_)
 	{
 		pt_.push_back(1/p);
 	}
-	p_ = QVector<double>(r->data, r->data + r->size);
+	p_ = QVector<double>(r.begin(), r.end());
 	p_max = *std::max_element(p_.begin(), p_.end());
 	for(auto& p_i : p_)
 	{
@@ -167,36 +170,27 @@ void TikhonovProcessor::Process()
 	this->getComponents(processed_data);
 	emit processingStateUpdate(0);
 
-	gsl_matrix_free(K);
-	gsl_matrix_free(W);
-	gsl_vector_free(s);
-	gsl_vector_free(K_t_s);
-	gsl_vector_free(W_K_t_s);
-	gsl_vector_free(r);
-	gsl_vector_free(A);
-	K = nullptr;
-	W = nullptr;
-	s = nullptr;
-	K_t_s = nullptr;
-	W_K_t_s = nullptr;
-	r = nullptr;
-	A = nullptr;
+	clearMemory();
+	
 }  //void TikhonovProcessor::Process()
 
 void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 {
 	double full_S = abs(trapz_intergal(pt_.begin(), pt_.end(), p_.begin(), p_.end()));
-	std::vector<size_t> peaks = argmax(p_.begin(), p_.end());
+	std::vector<size_t> peaks = argmax(p_.begin(), p_.end()); //error is here
+	std::vector<size_t> minimums = argmineq(p_.begin(), p_.end());
 	QVector<double> M;
 	QVector<double> T;
 	for(auto peak : peaks)
 	{
-		double peak_S = find_peak_S(peak);
-		if(peak_S > 0.005)
+		double peak_S = find_peak_S(peak, minimums);
+		M.push_back(peak_S / full_S);
+		T.push_back(this->pt_[peak]);
+		/*if(peak_S > 0.005)
 		{
-			M.push_back(peak_S / full_S);
-			T.push_back(this->pt_[peak]);
-		}
+			//M.push_back(peak_S / full_S);
+			//T.push_back(this->pt_[peak]);
+		}*/
 	}
 
 	NMRDataStruct components{
@@ -204,38 +198,84 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 		.t = T
 	};
 
+	getNoise(components);
+
 	emit componentsFound(components);
 }
 
-inline double TikhonovProcessor::find_peak_S(const size_t& peak_index)
+inline double TikhonovProcessor::find_peak_S(const size_t& peak_index, std::vector<size_t> minimums)
 {
-	unsigned int current_index_up = peak_index;
-	unsigned int current_index_down = peak_index;
-	while(this->p_[current_index_up] != 0)
-	{
-		if(current_index_up == this->p_.size() - 1)
-		{
-			break;
-		}
-		++current_index_up;
-	}
-	while(this->p_[current_index_down] != 0)
-	{
-		if(current_index_down == 0)
-		{
-			break;
-		}
-		--current_index_down;
-	}
+	auto current_iter_up = find_nearest_greater(peak_index, minimums.begin(), minimums.end());
+	size_t current_index_up = this->p_.length() - 1;
+	if(current_iter_up != minimums.end())
+		current_index_up = *current_iter_up;
+
+	auto current_iter_down = find_nearest_less(peak_index, minimums.begin(), minimums.end());
+	size_t current_index_down = 0;
+	if(current_iter_down != minimums.end())
+		current_index_down = *current_iter_down;
+
+
 	return abs(trapz_intergal(
 		this->pt_.begin() + current_index_down, 
-		this->pt_.end() - current_index_up,
+		this->pt_.begin() + current_index_up + 1,
 		this->p_.begin() + current_index_down, 
-		this->p_.end() - current_index_up
+		this->p_.begin() + current_index_up + 1
 	));
+}
+
+void TikhonovProcessor::getNoise(NMRDataStruct& components)
+{
+	/*QVector<double> approximated_A;
+	approximated_A.resize(t_.size());
+	approximated_A.fill(0);
+	for(int i = 0; i < components.A.size(); ++i)
+	{
+		for(int j = 0; j < approximated_A.size(); ++j)
+		{
+			approximated_A[j] += components.A[i] * exp(-this->t_[j] / components.t[i]);
+		}
+	}
+
+	for(int j = 0; j < this->A_.size(); ++j)
+	{
+		approximated_A[j] -= this->A_[j];
+	}
+
+	components.p = approximated_A;*/
+	for(int j = 0; j < this->A_.size(); ++j)
+	{
+		this->A_appr_[j] -= this->A_[j];
+	}
+
+	components.p = this->A_appr_;
+	components.pt = this->t_;
 }
 
 NMRDataStruct TikhonovProcessor::convert_spectrum(NMRDataStruct& processed_data)
 {
     return processed_data;
+}
+
+void TikhonovProcessor::enlargeMemory(const uint& p_size, const uint& t_size)
+{
+	if(p_size * (2 * t_size + p_size + 1) > this->memory_size_)
+	{
+		this->memory_size_ = p_size * (2 * t_size + p_size + 1);
+		delete[] this->memory_;
+		this->memory_ = new double[this->memory_size_ + 1];
+		this->first_free_cell_ = this->memory_;
+	}
+}
+
+double * TikhonovProcessor::getMemory(const size_t& size)
+{
+	double * returnable = this->first_free_cell_;
+	this->first_free_cell_ += size;
+	return returnable;
+}
+
+void TikhonovProcessor::clearMemory()
+{
+	first_free_cell_ = memory_;
 }
