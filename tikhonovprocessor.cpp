@@ -1,5 +1,6 @@
 #include "tikhonovprocessor.h"
 #include <armadillo>
+#include <cblas.h>
 
 #include <QDebug>
 
@@ -13,7 +14,9 @@ TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
 	memory_(new double[p_size_ * 10000]),
 	first_free_cell_(memory_),
 	memory_size_(p_size_ * 10000)
-{}
+{
+	openblas_set_num_threads(8);
+}
 
 TikhonovProcessor::~TikhonovProcessor()
 {
@@ -245,10 +248,10 @@ void TikhonovProcessor::getNoise(NMRDataStruct& components)
 	components.p = approximated_A;*/
 	for(int j = 0; j < this->A_.size(); ++j)
 	{
-		this->A_appr_[j] -= this->A_[j];
+		this->A_[j] -= this->A_appr_[j];
 	}
 
-	components.p = this->A_appr_;
+	components.p = this->A_;
 	components.pt = this->t_;
 }
 
