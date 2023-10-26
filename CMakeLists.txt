@@ -35,6 +35,7 @@ find_package(OpenBLAS REQUIRED)
 set(ENV{OPENBLAS_NUM_THREADS}, 8)
 include_directories(${BLAS_INCLUDE_DIRS})
 find_package(Armadillo REQUIRED)
+find_package(NLopt CONFIG REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -62,6 +63,8 @@ set(PROJECT_SOURCES
         ${INCLUDE_DIRECTORIES}/qcustomplot.h
 )
 
+#option(option(X_VCPKG_APPLOCAL_DEPS_INSTALL ON))
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(
         ${PROJECT_NAME}
@@ -88,6 +91,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${BLAS_LIBRARIES}
     OpenBLAS::OpenBLAS
     ${ARMADILLO_LIBRARIES}
+    NLopt::nlopt
 )
 
 set_target_properties(
