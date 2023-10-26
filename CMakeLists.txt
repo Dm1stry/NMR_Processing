@@ -55,6 +55,7 @@ set(PROJECT_SOURCES
         sequentalprocessor.h    sequentalprocessor.cpp
 
         mathfunctions.h         mathfunctions.cpp
+        approximation.h         approximation.cpp
 
         nmrdata.h               nmrdata.cpp
         nmrdatastruct.h
