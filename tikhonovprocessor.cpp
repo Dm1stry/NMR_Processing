@@ -2,8 +2,6 @@
 #include <armadillo>
 #include <cblas.h>
 
-#include <QDebug>
-
 TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
   : BaseProcessor(parent),
 	alpha_(200),
@@ -15,7 +13,7 @@ TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
 	first_free_cell_(memory_),
 	memory_size_(p_size_ * 10000)
 {
-	openblas_set_num_threads(8);
+	openblas_set_num_threads(12);
 }
 
 TikhonovProcessor::~TikhonovProcessor()
@@ -29,27 +27,22 @@ void TikhonovProcessor::updateParameter(QString parameter_name, QVariant paramet
 	if(parameter_name == "alpha")
 	{
 	this->alpha_ = parameter_value.toDouble();
-	qDebug() << "alpha: " << alpha_;
 	}
 	else if(parameter_name == "iterations")
 	{
 	this->iterations_ = parameter_value.toUInt();
-	qDebug() << "iterations: " << iterations_;
 	}
 	else if(parameter_name == "T2min")
 	{
 	this->T_min_ = parameter_value.toDouble();
-	qDebug() << "Tmin: " << T_min_;
 	}
 	else if(parameter_name == "T2max")
 	{
 	this->T_max_ = parameter_value.toDouble();
-	qDebug() << "Tmax: " << T_max_;
 	}
 	else if(parameter_name == "p_size")
 	{
 	this->p_size_ = parameter_value.toUInt();
-	qDebug() << "p: " << p_size_;
 	enlargeMemory(this->p_size_, this->A_.size());
 	}
 }
@@ -189,11 +182,6 @@ void TikhonovProcessor::getComponents(const NMRDataStruct& processed_data)
 		double peak_S = find_peak_S(peak, minimums);
 		M.push_back(peak_S / full_S);
 		T.push_back(this->pt_[peak]);
-		/*if(peak_S > 0.005)
-		{
-			//M.push_back(peak_S / full_S);
-			//T.push_back(this->pt_[peak]);
-		}*/
 	}
 
 	NMRDataStruct components{
@@ -248,10 +236,10 @@ void TikhonovProcessor::getNoise(NMRDataStruct& components)
 	components.p = approximated_A;*/
 	for(int j = 0; j < this->A_.size(); ++j)
 	{
-		this->A_[j] -= this->A_appr_[j];
+		this->A_appr_[j] -= this->A_[j];
 	}
 
-	components.p = this->A_;
+	components.p = this->A_appr_;
 	components.pt = this->t_;
 }
 
