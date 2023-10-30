@@ -30,3 +30,24 @@ std::vector<double> logspace(double start, double stop, size_t number, double ba
     return space;
 }
 
+int get_power(double num)
+{
+    int power = 0;
+    if(num < 1)
+    {
+        while(!floor(num))
+        {
+            num *= 10;
+            ++power;
+        }
+    }
+    else
+    {
+        while(!floor(num))
+        {
+            num /= 10;
+            --power;
+        }
+    }
+    return power;
+}
