@@ -111,13 +111,8 @@ namespace appr_funcs
         return sum * sum;
     }
 
-    std::vector<double> approximate(const std::vector<double>& x_src, const std::vector<double>& y_src, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds, std::vector<double>& params)
+    std::vector<double> approximate(const approximation_data& data, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds, std::vector<double>& params)
     {
-        approximation_data data{
-        .x_src = x_src,
-        .y_src = y_src
-        };
-
         nlopt::opt optimizer(nlopt::algorithm::LN_COBYLA, params.size());
         optimizer.set_min_objective(minimizable, (void*)(&data));
         optimizer.set_lower_bounds(lower_bounds);
@@ -130,5 +125,15 @@ namespace appr_funcs
         nlopt::result result = optimizer.optimize(params, result_func_value);
 
         return params;
+    }
+
+    std::vector<double> approximate(const std::vector<double>& x_src, const std::vector<double>& y_src, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds, std::vector<double>& params)
+    {
+        approximation_data data{
+        .x_src = x_src,
+        .y_src = y_src
+        };
+
+        return approximate(data, lower_bounds, upper_bounds, params);
     }
 };
