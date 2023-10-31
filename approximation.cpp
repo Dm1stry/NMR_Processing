@@ -1,4 +1,5 @@
 #include <nlopt.hpp>
+#pragma warning(disable : 4267)
 
 namespace appr_funcs
 {
@@ -137,3 +138,5 @@ namespace appr_funcs
         return approximate(data, lower_bounds, upper_bounds, params);
     }
 };
+
+#pragma warning(default : 4267)
