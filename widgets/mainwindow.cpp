@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget * parent)
     qRegisterMetaType<NMRDataStruct>("NMRDataStruct&");
     layoutSetup();
     connections();
+    plot_widget_->rescaleAxis(1, false);
+    spectrum_widget_->rescaleAxis(1, true);
 }
 
 inline void MainWindow::connections()

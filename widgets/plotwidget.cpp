@@ -47,7 +47,6 @@ inline void PlotWidget::layoutSetup()
 		this->x_box_->addItem(scale_type_.first);
 		this->y_box_->addItem(scale_type_.first);
 	}
-
 	scale_layout->addWidget(this->x_label_);
 	scale_layout->addWidget(this->x_box_);
 	scale_layout->addWidget(this->y_label_);
@@ -108,13 +107,16 @@ void PlotWidget::rescaleAxis(int scale_type, bool x_axis)
 	static QSharedPointer<QCPAxisTickerLog> log_ticker(new QCPAxisTickerLog);
 	static QSharedPointer<QCPAxisTickerFixed> linear_ticker(new QCPAxisTickerFixed);
 	QCPAxis * axis;
+	QComboBox * box;
 	if(x_axis)
 	{
 		axis = this->plot_->xAxis;
+		box = this->x_box_;
 	}
 	else
 	{
 		axis = this->plot_->yAxis;
+		box = this->y_box_; 
 	}
 
 	axis->setScaleType(scale_types_[scale_type].second);
@@ -122,10 +124,12 @@ void PlotWidget::rescaleAxis(int scale_type, bool x_axis)
 	if(scale_types_[scale_type].second == QCPAxis::ScaleType::stLogarithmic)
 	{
 		axis->setTicker(log_ticker);
+		box->setCurrentIndex(1);
 	}
 	else
 	{
 		axis->setTicker(linear_ticker);
+		box->setCurrentIndex(0);
 	}
 	axis->setNumberFormat("eb");
 	axis->setNumberPrecision(0);
