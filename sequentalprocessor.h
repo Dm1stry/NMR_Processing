@@ -30,6 +30,7 @@ private:
     double T_max_;
 
     void createSpectrum(NMRDataStruct& processed_data);
+    void getNoise(NMRDataStruct& components);
     bool approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data);
 
 };

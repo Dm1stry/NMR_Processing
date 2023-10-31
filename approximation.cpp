@@ -1,4 +1,5 @@
 #include <nlopt.hpp>
+#pragma warning(push)
 #pragma warning(disable : 4267)
 
 namespace appr_funcs
@@ -139,4 +140,4 @@ namespace appr_funcs
     }
 };
 
-#pragma warning(default : 4267)
+#pragma warning(pop)

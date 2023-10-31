@@ -1,4 +1,5 @@
 #include "sequentalprocessor.h"
+#pragma warning(push)
 #pragma warning(disable : 4267)
 #pragma warning(disable : 4996)
 
@@ -57,7 +58,7 @@ void SequentalProcessor::Process()
 		lower_bounds.resize(2 * i);
 		upper_bounds.clear();
 		upper_bounds.resize(2 * i);
-		for(int n = 0; n < 2 * i; n+= 2)
+		for(uint n = 0; n < 2 * i; n+= 2)
 		{
 			lower_bounds[n] = min_ratio;
 			lower_bounds[n + 1] = T_min_;
@@ -95,29 +96,10 @@ void SequentalProcessor::Process()
 		components.t.push_back(params_[i + 1]);
 	}
 
+	getNoise(components);
+
 	emit componentsFound(components);
 	emit processingDone(processed_data);
-}
-
-void SequentalProcessor::createSpectrum(NMRDataStruct& processed_data)
-{
-	p_.reserve(3 * params_.size() + 2);
-	pt_.reserve(3 * params_.size() + 2);
-	p_.push_back(0);
-	pt_.push_back(T_min_);
-	for(int i = 0; i < params_.size(); i+=2)
-	{
-		p_.push_back(0);
-		pt_.push_back(params_[i + 1] * 0.99999);
-		p_.push_back(params_[i]);
-		pt_.push_back(params_[i + 1]);
-		p_.push_back(0);
-		pt_.push_back(params_[i + 1] * 1.00001);
-	}
-	p_.push_back(0);
-	pt_.push_back(T_max_);
-	processed_data.pt = pt_;
-	processed_data.p = p_;
 }
 
 bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data)
@@ -143,5 +125,36 @@ bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& pr
 	return get_power(curr_integral) == get_power(prev_integral);
 }
 
-#pragma warning(default : 4267)
-#pragma warning(default : 4996)
+void SequentalProcessor::createSpectrum(NMRDataStruct& processed_data)
+{
+	p_.reserve(3 * params_.size() + 2);
+	pt_.reserve(3 * params_.size() + 2);
+	p_.push_back(0);
+	pt_.push_back(T_min_);
+	for(int i = 0; i < params_.size(); i+=2)
+	{
+		p_.push_back(0);
+		pt_.push_back(params_[i + 1] * 0.99999);
+		p_.push_back(params_[i]);
+		pt_.push_back(params_[i + 1]);
+		p_.push_back(0);
+		pt_.push_back(params_[i + 1] * 1.00001);
+	}
+	p_.push_back(0);
+	pt_.push_back(T_max_);
+	processed_data.pt = pt_;
+	processed_data.p = p_;
+}
+
+void SequentalProcessor::getNoise(NMRDataStruct& components)
+{
+	for(int j = 0; j < this->A_.size(); ++j)
+	{
+		this->A_appr_[j] -= this->A_[j];
+	}
+
+	components.p = this->A_appr_;
+	components.pt = this->t_;
+}
+
+#pragma warning(pop)
