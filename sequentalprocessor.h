@@ -5,6 +5,7 @@
 #include "approximation.h"
 #include "mathfunctions.h"
 #include <vector>
+#include <omp.h>
 
 class SequentalProcessor : public BaseProcessor
 {
