@@ -29,6 +29,7 @@ private:
     double T_min_;
     double T_max_;
 
+    void createSpectrum(NMRDataStruct& processed_data);
     bool approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data);
 
 };

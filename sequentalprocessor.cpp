@@ -1,4 +1,6 @@
 #include "sequentalprocessor.h"
+#pragma warning(disable : 4267)
+#pragma warning(disable : 4996)
 
 SequentalProcessor::SequentalProcessor(QObject * parent)
   : BaseProcessor(parent), N_max_(5), T_max_(1e9), T_min_(1e-2)
@@ -46,7 +48,7 @@ void SequentalProcessor::Process()
 	const double min_ratio = 0.01;
 
 	std::vector<double> prev_params;
-    for(int i = 1; i <= N_max_; ++i)
+    for(uint i = 1; i <= N_max_; ++i)
 	{
 		double params_ratio = 1.0 / i;
 		params_.clear();
@@ -81,8 +83,9 @@ void SequentalProcessor::Process()
 	NMRDataStruct processed_data {
 		.A = A_appr_,
 		.t = t_,
-		//.p = 
 	};
+
+	createSpectrum(processed_data);
 
 	NMRDataStruct components;
 
@@ -94,6 +97,27 @@ void SequentalProcessor::Process()
 
 	emit componentsFound(components);
 	emit processingDone(processed_data);
+}
+
+void SequentalProcessor::createSpectrum(NMRDataStruct& processed_data)
+{
+	p_.reserve(3 * params_.size() + 2);
+	pt_.reserve(3 * params_.size() + 2);
+	p_.push_back(0);
+	pt_.push_back(T_min_);
+	for(int i = 0; i < params_.size(); i+=2)
+	{
+		p_.push_back(0);
+		pt_.push_back(params_[i + 1] * 0.99999);
+		p_.push_back(params_[i]);
+		pt_.push_back(params_[i + 1]);
+		p_.push_back(0);
+		pt_.push_back(params_[i + 1] * 1.00001);
+	}
+	p_.push_back(0);
+	pt_.push_back(T_max_);
+	processed_data.pt = pt_;
+	processed_data.p = p_;
 }
 
 bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data)
@@ -118,3 +142,6 @@ bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& pr
 
 	return get_power(curr_integral) == get_power(prev_integral);
 }
+
+#pragma warning(default : 4267)
+#pragma warning(default : 4996)
