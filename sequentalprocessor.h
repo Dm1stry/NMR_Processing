@@ -2,7 +2,9 @@
 #define SEQUENTALPROCESSOR_H
 
 #include "baseprocessor.h"
-
+#include "approximation.h"
+#include "mathfunctions.h"
+#include <vector>
 
 class SequentalProcessor : public BaseProcessor
 {
@@ -18,11 +20,19 @@ private:
     QVector<double> t_;
     QVector<double> A_;
 
+    std::vector<double> params_;
     QVector<double> A_appr_;
     QVector<double> pt_;
     QVector<double> p_;
 
     uint N_max_;
+    double T_min_;
+    double T_max_;
+
+    void createSpectrum(NMRDataStruct& processed_data);
+    void getNoise(NMRDataStruct& components);
+    bool approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data);
+
 };
 
 #endif

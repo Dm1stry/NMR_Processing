@@ -2,6 +2,7 @@
 #define MATHFUNCTIONS_H
 #include <vector>
 #include <map>
+#include <cmath>
 
 double trapz_intergal(std::vector<double> x, std::vector<double> y);
 
@@ -141,4 +142,6 @@ inline Iterator find_nearest_less(const Item& value, Iterator x_begin, Iterator 
 }
 
 std::vector<double> logspace(double start, double stop, size_t number, double base = 10.0, bool endpoint = true);
+
+int get_power(double num);
 #endif

@@ -23,6 +23,7 @@ void NMRData::readAsCPMG(const QString& filepath)
             line = line.trimmed();
             if(line.begin() != line.end())
             {
+                line.replace(',', '.');
                 splitted_line = line.split(spaces);
                 bool A_converted = false;
                 double A_value = splitted_line[1].toDouble(&A_converted);

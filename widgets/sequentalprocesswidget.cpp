@@ -7,6 +7,8 @@ SequentalProcessWidget::SequentalProcessWidget(QWidget * parent)
     this->setProcessorInSeparateThread(processor);
 
 	this->addParameter("N_max", "N<sub>max</sub>", 5);
+  this->addParameter("T_max", "T<sub>max</sub>", 1e9);
+  this->addParameter("T_min", "T<sub>min</sub>", 1e-2);
 
 	QVBoxLayout * widget_layout = new QVBoxLayout;
 	QGridLayout * parameters_layout = this->getParametersLayout();
