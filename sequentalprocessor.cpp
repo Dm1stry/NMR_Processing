@@ -5,7 +5,9 @@
 
 SequentalProcessor::SequentalProcessor(QObject * parent)
   : BaseProcessor(parent), N_max_(5), T_max_(1e9), T_min_(1e-2)
-{}
+{
+	omp_set_num_threads(8);
+}
 
 SequentalProcessor::~SequentalProcessor()
 {}
@@ -70,8 +72,6 @@ void SequentalProcessor::Process()
 
 		prev_params = params_;
 		params_ = appr_funcs::approximate(data, lower_bounds, upper_bounds, params_);
-		//prev_y_appr = y_appr;
-		//y_appr = appr_funcs::exp_n(data.x_src, params_);
 
 		if(approximationIsGoodEnough(prev_params, data))
 		{
@@ -112,7 +112,8 @@ bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& pr
 	std::vector<double> sq_diff_curr(data.x_src.size());
 	std::vector<double> prev_exp = appr_funcs::exp_n(data.x_src, prev);
 	std::vector<double> curr_exp = appr_funcs::exp_n(data.x_src, params_);
-	for(int i = 0; i < prev.size(); ++i)
+	#pragma omp parallel for
+	for(int i = 0; i < prev_exp.size(); ++i)
 	{
 		double tmp_prev = prev_exp[i] - data.y_src[i];
 		double tmp_curr = curr_exp[i] - data.y_src[i];
@@ -148,6 +149,7 @@ void SequentalProcessor::createSpectrum(NMRDataStruct& processed_data)
 
 void SequentalProcessor::getNoise(NMRDataStruct& components)
 {
+	#pragma omp parallel for
 	for(int j = 0; j < this->A_.size(); ++j)
 	{
 		this->A_appr_[j] -= this->A_[j];
