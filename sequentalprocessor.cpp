@@ -71,7 +71,7 @@ void SequentalProcessor::Process()
 		}
 
 		prev_params = params_;
-		params_ = appr_funcs::approximate(data, lower_bounds, upper_bounds, params_);
+		params_ = appr_funcs::approximate_exp_n(data, lower_bounds, upper_bounds, params_);
 
 		if(approximationIsGoodEnough(prev_params, data))
 		{
@@ -124,6 +124,8 @@ bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& pr
 	double prev_integral = trapz_intergal(data.x_src, sq_diff_prev);
 
 	return get_power(curr_integral) == get_power(prev_integral);
+
+	//Среднеквадратичное напряжение шума
 }
 
 void SequentalProcessor::createSpectrum(NMRDataStruct& processed_data)
