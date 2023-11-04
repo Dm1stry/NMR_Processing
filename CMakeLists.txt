@@ -9,12 +9,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(INCLUDE_DIRECTORIES dependencies/QCustomPlot)
 set(WIDGET_DIRECTORY widgets)
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
-set(VCPKG_TARGET_TRIPLET x64-windows-static)
-set(CMAKE_TOOLCHAIN_FILE D:/Development/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake)
-include(${CMAKE_TOOLCHAIN_FILE})
+#set(VCPKG_TARGET_TRIPLET x64-windows-static)
+#set(CMAKE_TOOLCHAIN_FILE D:/Development/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake)
+#include(${CMAKE_TOOLCHAIN_FILE})
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
