@@ -32,9 +32,6 @@ vcpkg integrate install
 После этого vcpkg также любезно должен выдать строчку:
 CMake projects should use: "-DCMAKE_TOOLCHAIN_FILE=Путь/До/Нужного/Нам/vcpkg.cmake"
 
-Путь из этой строчки нужно скопировать и вставить вместо 
-> D:/Development/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake
-
 # Сборка
 
 Чтобы собрать проект, создайте папку верхнего уровня, где будет лежать ваш файл конфигурации cmake для использования vcpkg:
