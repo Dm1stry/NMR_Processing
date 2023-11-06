@@ -36,6 +36,8 @@ void SequentalProcessor::updateData(const NMRDataStruct& raw_data)
 
 void SequentalProcessor::Process()
 {
+	double average_quad_noise = this->getNoiseLevel();
+
 	std::vector<double> upper_bounds;
 	std::vector<double> lower_bounds;
 	params_.reserve(N_max_ * 2 + 1);  //Вектор хранящий параметры затухания, {A1, T1, A2, T2, ..., An, Tn}
@@ -139,8 +141,8 @@ double SequentalProcessor::getNoiseLevel()
 		}
 		current_point += piece_len;  // Смещение точки начала отрезка на длину отрезка
 	}//while(current_point < A_.size())
-	double noise = trapz_intergal(t_.begin(), t_.end(), noise_A.begin(), noise_A.end());
-	return noise / (*(t_.end() - 1) - *(t_.begin()));
+	double noise = sqrt(trapz_intergal(t_.begin(), t_.end(), noise_A.begin(), noise_A.end()) / (*(t_.end() - 1) - *(t_.begin())));  // Вычисление среднеквадратичного значения шума
+	return noise;
 }
 
 bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data)
