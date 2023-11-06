@@ -34,7 +34,7 @@ namespace appr_funcs
 
     double pol_minimizable(const std::vector<double> &params, std::vector<double> &grad, void* f_data);
 
-    std::vector<double> approximate_pol_n(const std::vector<double>& x_src, const std::vector<double>& y_src, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds, std::vector<double>& params);
+    std::vector<double> approximate_pol_n(const std::vector<double>& x_src, const std::vector<double>& y_src, std::vector<double>& params);
 
-    std::vector<double> approximate_pol_n(const approximation_data& data, const std::vector<double>& lower_bounds, const std::vector<double>& upper_bounds, std::vector<double>& params);
+    std::vector<double> approximate_pol_n(const approximation_data& data, std::vector<double>& params);
 };
