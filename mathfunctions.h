@@ -6,8 +6,8 @@
 
 double trapz_intergal(std::vector<double> x, std::vector<double> y);
 
-template<class RandomIt> 
-inline double trapz_intergal(RandomIt x_begin, RandomIt x_end, RandomIt y_begin, RandomIt y_end)
+template<class RandomIt1, class RandomIt2> 
+inline double trapz_intergal(RandomIt1 x_begin, RandomIt1 x_end, RandomIt2 y_begin, RandomIt2 y_end)
 {
     if(x_begin == x_end || x_end - x_begin != y_end - y_begin)
     {
