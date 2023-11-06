@@ -102,6 +102,47 @@ void SequentalProcessor::Process()
 	emit processingDone(processed_data);
 }
 
+double SequentalProcessor::getNoiseLevel()
+{
+	const uint piece_len = 100;  // Количество точек в отрезке разбиения
+	std::vector<double> noise_A(A_.begin(), A_.end());
+	std::vector<double> sub_vector_A;  //Отрезок разбиения содержащий амплитуды
+	std::vector<double> sub_vector_t;  //Отрезок разбиения, содержащий время
+	sub_vector_A.reserve(piece_len + 2);
+	sub_vector_t.reserve(piece_len + 2);
+	uint current_point = 0;  //Точка, являющаяся отрезком разбиения
+	std::vector<double> params = {0, 0, 0, 0, 0};  // Параметры полиномиальной аппроксимации
+	while(current_point < A_.size())
+	{
+		sub_vector_A.clear();
+		sub_vector_t.clear();
+		auto sub_A_begin_it = noise_A.begin() + current_point;  // Итераторы на начало и конец отрезка рабиения в скопированных исходных данных
+		auto sub_t_begin_it = t_.begin() + current_point;
+		auto sub_A_end_it = sub_A_begin_it + piece_len;
+		auto sub_t_end_it = sub_t_begin_it + piece_len;
+		if(current_point + piece_len >= noise_A.size())  // Для последнего отрезка за конец принимается конец вектора исходных данных
+		{
+			sub_A_end_it = noise_A.end();
+			sub_t_end_it = t_.end();
+		}
+
+		sub_vector_A.assign(sub_A_begin_it, sub_A_end_it);  // Копирование участка данных в стд вектор (можно сделать на указателях и без копирования, но пока пусть будет так)
+		sub_vector_t.assign(sub_t_begin_it, sub_t_end_it);
+
+		params = appr_funcs::approximate_pol_n(sub_vector_t, sub_vector_A, params);  // Полиномиальная аппроксимация
+		std::vector<double> apprximated_curve = appr_funcs::polynom(sub_vector_t, params);  // Получение полиномиальной кривой
+		auto approximated_curve_it = apprximated_curve.begin();
+		for(auto it = sub_A_begin_it; it < sub_A_end_it; ++it, ++approximated_curve_it)  // Вычитание полученной кривой из исходных данных
+		{
+			*it -= *approximated_curve_it;
+			*it = (*it) * (*it);
+		}
+		current_point += piece_len;  // Смещение точки начала отрезка на длину отрезка
+	}//while(current_point < A_.size())
+	double noise = trapz_intergal(t_.begin(), t_.end(), noise_A.begin(), noise_A.end());
+	return noise / (*(t_.end() - 1) - *(t_.begin()));
+}
+
 bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data)
 {
 	if(prev.empty())
