@@ -75,7 +75,7 @@ void SequentalProcessor::Process()
 		prev_params = params_;
 		params_ = appr_funcs::approximate_exp_n(data, lower_bounds, upper_bounds, params_);
 
-		if(approximationIsGoodEnough(prev_params, data))
+		if(approximationIsGoodEnough(data, average_quad_noise))
 		{
 			break;
 		}
@@ -145,9 +145,9 @@ double SequentalProcessor::getNoiseLevel()
 	return noise;
 }
 
-bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& prev, const appr_funcs::approximation_data& data)
+bool SequentalProcessor::approximationIsGoodEnough(const appr_funcs::approximation_data& data, const double noise_level)
 {
-	if(prev.empty())
+	/*if(prev.empty())
 	{
 		return false;
 	}
@@ -166,7 +166,20 @@ bool SequentalProcessor::approximationIsGoodEnough(const std::vector<double>& pr
 	double curr_integral = trapz_intergal(data.x_src, sq_diff_curr);
 	double prev_integral = trapz_intergal(data.x_src, sq_diff_prev);
 
-	return get_power(curr_integral) == get_power(prev_integral);
+	return get_power(curr_integral) == get_power(prev_integral);*/
+	bool good = true;
+	const uint piece_len = 100;
+	QVector<double> diff = A_;
+
+	#pragma omp parallel for
+	for(int j = 0; j < this->A_.size(); ++j)
+	{
+		diff[j] -= this->A_[j];
+		diff[j] *= diff[j];
+	}
+
+	double current_noise_level = sqrt(trapz_intergal(t_.begin(), t_.end(), diff.begin(), diff.end()) / (*(t_.end() - 1) - *(t_.begin())));
+	return current_noise_level < 1.01 * noise_level;
 
 	//Среднеквадратичное напряжение шума
 }
