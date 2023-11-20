@@ -113,4 +113,3 @@ void BaseProcessWidget::clearParams()
     this->processor_->updateData(raw_data);
     this->process_button_->setEnabled(true);  // A little bit incorrect, cause we need to check if parameters is set or not too
 }
-
