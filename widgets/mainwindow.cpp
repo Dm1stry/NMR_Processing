@@ -86,3 +86,9 @@ inline void MainWindow::layoutSetup()
 
     this->setLayout(main_layout);
 }
+
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+    this->filesystem_widget_->saveSettings();
+    event->accept();    
+}

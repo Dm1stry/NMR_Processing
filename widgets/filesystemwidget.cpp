@@ -29,7 +29,9 @@ FileSystemWidget::FileSystemWidget(QWidget * parent /*= nullptr*/)
     this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 
     this->directory_explorer_->setFileMode(QFileDialog::ExistingFile);
-    this->changeDirectory(this->filesystem_model_->myComputer().toString());
+
+    this->loadSettings();
+    //this->changeDirectory(this->filesystem_model_->myComputer().toString());
 
     //Open Directory Explorer on it's button
     connect(this->directory_explorer_button_, &QPushButton::clicked, this, &FileSystemWidget::openDirectoryExplorer);
@@ -60,6 +62,7 @@ void FileSystemWidget::openDirectoryExplorer()
     }
 }
 
+
 void FileSystemWidget::onPathSelected(const QString& path)
 {
     QFileInfo info(path);
@@ -72,4 +75,18 @@ void FileSystemWidget::onPathSelected(const QString& path)
         this->changeDirectory(info.absoluteDir().absolutePath());
         emit fileSelected(path);
     }
+}
+
+void FileSystemWidget::saveSettings()
+{
+    QSettings settings("KPFU", "NMR_Processing");
+    settings.setValue("current_dir", current_directory_.absolutePath());
+    settings.sync();
+    qDebug() << "Settings saveg";
+}
+
+void FileSystemWidget::loadSettings()
+{
+    QSettings settings("KPFU", "NMR_Processing");
+    this->changeDirectory(settings.value("current_dir", this->filesystem_model_->myComputer().toString()).toString());
 }

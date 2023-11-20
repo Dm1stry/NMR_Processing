@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QSettings>
 
 class FileSystemWidget : public QWidget
 {
@@ -34,6 +35,8 @@ signals:
 public slots:
     void changeDirectory(const QString& directory_path);
     void openDirectoryExplorer();
+    void loadSettings();
+    void saveSettings();   
 };
 
 #endif

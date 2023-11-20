@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMetaType>
+#include <QCloseEvent>
 
 
 #include "filesystemwidget.h"
@@ -32,6 +33,8 @@ private:
 
     inline void connections();
     inline void layoutSetup();
+protected:
+    void closeEvent(QCloseEvent * event);
 };
 
 #endif
