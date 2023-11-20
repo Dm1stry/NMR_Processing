@@ -1,5 +1,6 @@
 #include <nlopt.hpp>
 #include <stdint.h>
+#include <cmath>
 #pragma warning(push)
 #pragma warning(disable : 4267)
 
@@ -187,10 +188,11 @@ namespace appr_funcs
             {
                 grad[i] = 0;
                 std::vector<double> d_pol = d_polynom(data->x_src, params, i);
+                std::vector<double> pol = polynom(data->x_src, params);
                 for(size_t j = 0; j < data->x_src.size(); ++j)
                 {
                     double tmp = y_current[j] - data->y_src[j];
-                    grad[i] += 2 * tmp * d_pol[j];
+                    grad[i] += 2 * tmp * d_pol[j] / pol[j];
                 }
                 // = d_exp_n(data->x_src, params, i);
             }
@@ -206,7 +208,7 @@ namespace appr_funcs
         //Possible to parallize
         for(int i = 0; i < n; ++i)
         {
-            double tmp = y_current[i] - data->y_src[i];  //log(a - b)
+            double tmp = log(abs(y_current[i] - data->y_src[i]) + 1e-10);  //log(a - b)
             sum += tmp * tmp;
         }
         d_pol_minimizable(params, grad, data, y_current);
