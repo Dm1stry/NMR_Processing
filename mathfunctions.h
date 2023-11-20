@@ -23,6 +23,22 @@ inline double trapz_intergal(RandomIt1 x_begin, RandomIt1 x_end, RandomIt2 y_beg
     return sum;
 }
 
+template<class RandomIt> 
+inline double trapz_intergal(RandomIt y_begin, RandomIt y_end)
+{
+    if(y_begin == y_end)
+    {
+        return 0;
+    }
+    double sum = 0;
+    for(; y_begin < y_end; y_begin++)
+    {
+        sum += (*y_begin);
+    }
+
+    return sum;
+}
+
 
 /*
 * Returns vector of local maximums in collection
@@ -35,6 +51,14 @@ inline std::vector<size_t> argmax(RandomIt x_begin, RandomIt x_end)
         return {};
     }
     std::vector<size_t> peaks;
+    if(*x_begin != 0)
+    {
+        peaks.push_back(1);
+    }
+    if(*(x_end - 1) != 0)
+    {
+        peaks.push_back(x_end - x_begin - 2);
+    }
     for(auto x_current = x_begin + 1; x_current < x_end - 1; ++x_current)
     {
         if(*x_current > *(x_current - 1) && *x_current > *(x_current + 1))
@@ -79,7 +103,7 @@ inline std::vector<size_t> argmineq(RandomIt x_begin, RandomIt x_end)
         return {0};
     }
     std::vector<size_t> peaks;
-    if(*x_begin < *(x_begin + 1))
+    if(*x_begin != 0)
     {
         peaks.push_back(0);
     }
@@ -90,7 +114,7 @@ inline std::vector<size_t> argmineq(RandomIt x_begin, RandomIt x_end)
             peaks.push_back(x_current - x_begin);
         }
     }
-    if((x_end - 2) >= x_begin && *(x_end - 1) < *(x_end - 2))
+    if((x_end - 2) >= x_begin && *(x_end - 1) != 0)
     {
         peaks.push_back((x_end - x_begin) - 1);
     }
