@@ -10,7 +10,7 @@ TikhonovProcessWidget::TikhonovProcessWidget(QWidget * parent)
 	this->addParameter("T2max", "T<sub>2, max</sub> (мкс)", 1e9);
 	this->addParameter("alpha", "Параметр регуляризации", 200);
 	this->addParameter("iterations", "Количество итераций", 1000);
-	this->addParameter("p_size", "Дискретизация времени", 1000);
+	this->addParameter("p_size", "Дискретизация времени", 400);
 
     QVBoxLayout * widget_layout = new QVBoxLayout;
     QGridLayout * parameters_layout = this->getParametersLayout();

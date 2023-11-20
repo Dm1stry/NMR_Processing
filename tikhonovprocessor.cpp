@@ -8,7 +8,7 @@ TikhonovProcessor::TikhonovProcessor(QObject * parent /*= nullptr*/)
 	iterations_(1000),
 	T_min_(100),
 	T_max_(1e9),
-	p_size_(1000),
+	p_size_(400),
 	memory_(new double[p_size_ * 10000]),
 	first_free_cell_(memory_),
 	memory_size_(p_size_ * 10000)
